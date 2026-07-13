@@ -1,18 +1,13 @@
 name: Release
 
-# Triggered by a version tag (vX.Y.Z). It always builds the distributions and cuts
-# a GitHub Release with the wheel + sdist attached. It also publishes to PyPI via
-# Trusted Publishing (no API tokens) once that is enabled - see below.
+# Triggered by a version tag (vX.Y.Z). It always builds the distributions, cuts a
+# GitHub Release with the wheel + sdist attached, and publishes to PyPI using the
+# PYPI_API_TOKEN repository secret.
 #
-# Enable PyPI publishing (one-time):
-#   1. Register a Trusted Publisher for project `nrdax` at
-#      https://pypi.org/manage/project/nrdax/settings/publishing/
-#      (owner: NullRabbitLabs, repo: nrdax-python, workflow: release.yml,
-#       environment: pypi).
-#   2. Turn it on for this repo:  gh variable set PYPI_TRUSTED_PUBLISHING --body true
-#      (or Settings > Secrets and variables > Actions > Variables).
-# Until it is enabled, tagging still produces a GitHub Release; the PyPI job is
-# skipped (not failed), so the release never blocks on PyPI setup.
+# PyPI auth: the `PYPI_API_TOKEN` secret (set with `gh secret set PYPI_API_TOKEN`,
+# value never in source). The publish job runs only on this repository, so forks
+# never attempt to publish. To publish an already-tagged version (e.g. after adding
+# the token later), use: Actions > Release > Run workflow > enter the tag.
 
 on:
   push:
@@ -20,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing tag to build a release for (e.g. v0.1.0)"
+        description: "Existing tag to build and publish (e.g. v0.1.0)"
         required: true
 
 permissions:
@@ -50,6 +45,8 @@ jobs:
   github-release:
     name: github release
     needs: build
+    # Only when an actual tag is pushed (not on manual re-publish of an existing tag).
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -61,8 +58,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
-          name: ${{ github.event.inputs.tag || github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
           generate_release_notes: true
           files: dist/*
           fail_on_unmatched_files: true
@@ -70,15 +67,9 @@ jobs:
   publish-pypi:
     name: publish to PyPI
     needs: build
-    # Skipped until Trusted Publishing is configured and the variable is set to
-    # "true" - so the GitHub Release never blocks on PyPI being ready.
-    if: ${{ vars.PYPI_TRUSTED_PUBLISHING == 'true' }}
+    # Never publish from forks.
+    if: ${{ github.repository == 'NullRabbitLabs/nrdax-python' }}
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/project/nrdax/
-    permissions:
-      id-token: write # required for Trusted Publishing (OIDC)
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -86,3 +77,5 @@ jobs:
           path: dist
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
