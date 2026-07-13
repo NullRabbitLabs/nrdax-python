@@ -1,26 +1,44 @@
 name: Release
 
-# Publishes to PyPI on a version tag using PyPI Trusted Publishing (OIDC) - no
-# API tokens are stored in this repository. Configure the trusted publisher once at
-# https://pypi.org/manage/project/nrdax/settings/publishing/ (environment: pypi).
+# Triggered by a version tag (vX.Y.Z). It always builds the distributions and cuts
+# a GitHub Release with the wheel + sdist attached. It also publishes to PyPI via
+# Trusted Publishing (no API tokens) once that is enabled - see below.
+#
+# Enable PyPI publishing (one-time):
+#   1. Register a Trusted Publisher for project `nrdax` at
+#      https://pypi.org/manage/project/nrdax/settings/publishing/
+#      (owner: NullRabbitLabs, repo: nrdax-python, workflow: release.yml,
+#       environment: pypi).
+#   2. Turn it on for this repo:  gh variable set PYPI_TRUSTED_PUBLISHING --body true
+#      (or Settings > Secrets and variables > Actions > Variables).
+# Until it is enabled, tagging still produces a GitHub Release; the PyPI job is
+# skipped (not failed), so the release never blocks on PyPI setup.
 
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build a release for (e.g. v0.1.0)"
+        required: true
 
 permissions:
   contents: read
 
 jobs:
   build:
+    name: build distributions
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: |
+      - name: Build and check
+        run: |
           python -m pip install --upgrade pip build twine
           python -m build
           twine check dist/*
@@ -29,29 +47,13 @@ jobs:
           name: dist
           path: dist/*
 
-  publish-pypi:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/project/nrdax/
-    permissions:
-      id-token: write # required for Trusted Publishing
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-
   github-release:
-    needs: publish-pypi
+    name: github release
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: dist
@@ -59,5 +61,28 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: ${{ github.event.inputs.tag || github.ref_name }}
           generate_release_notes: true
+          files: dist/*
+          fail_on_unmatched_files: true
+
+  publish-pypi:
+    name: publish to PyPI
+    needs: build
+    # Skipped until Trusted Publishing is configured and the variable is set to
+    # "true" - so the GitHub Release never blocks on PyPI being ready.
+    if: ${{ vars.PYPI_TRUSTED_PUBLISHING == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/nrdax/
+    permissions:
+      id-token: write # required for Trusted Publishing (OIDC)
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
