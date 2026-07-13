@@ -1,0 +1,10 @@
+{
+  "version": "v1.0",
+  "doi": "10.5281/zenodo.9990001",
+  "technique_count": 3,
+  "techniques": [
+    "NRDAX-T0001",
+    "NRDAX-T0002",
+    "NRDAX-T0003"
+  ]
+}

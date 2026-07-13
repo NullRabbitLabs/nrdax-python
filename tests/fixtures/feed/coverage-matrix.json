@@ -1,0 +1,34 @@
+{
+  "chains": [
+    "ethereum",
+    "solana",
+    "sui"
+  ],
+  "cells": [
+    {
+      "technique_id": "NRDAX-T0001",
+      "chain": "ethereum",
+      "strongest_fidelity": "proxy",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0001",
+      "chain": "solana",
+      "strongest_fidelity": "lab",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0002",
+      "chain": "sui",
+      "strongest_fidelity": "stub",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0003",
+      "chain": "ethereum",
+      "strongest_fidelity": "production-captured",
+      "instance_count": 1
+    }
+  ],
+  "known": []
+}

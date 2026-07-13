@@ -1,0 +1,25 @@
+{
+  "id": "NRDAX-T0002",
+  "name": "TCP connection table exhaustion",
+  "mechanism": "An attacker opens and half-completes many connections, exhausting the validator's connection table so legitimate peers can no longer connect.",
+  "family": "connection_exhaustion",
+  "status": "active",
+  "first_seen": "2025-02-20",
+  "instances": [
+    {
+      "chain": "sui",
+      "primitive_id": "sui_conn_exhaustion_halfopen",
+      "bundle_ref": "corpus_v1.4/sui_conn_exhaustion_halfopen/0002",
+      "fidelity": "stub",
+      "discovery_origin": "disclosed-advisory",
+      "external_references": []
+    }
+  ],
+  "external_references": [
+    {
+      "kind": "ghsa",
+      "id": "GHSA-aaaa-bbbb-cccc",
+      "url": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc"
+    }
+  ]
+}

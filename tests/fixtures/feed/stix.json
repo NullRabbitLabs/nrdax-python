@@ -1,0 +1,95 @@
+{
+  "id": "bundle--67557f41-343e-51af-9835-f00aa26a370f",
+  "objects": [
+    {
+      "created": "2025-01-15T00:00:00.000Z",
+      "description": "A single unauthenticated JSON-RPC getBlock request elicits a response many times the request size, amplifying an attacker's uplink against the validator's RPC surface.",
+      "external_references": [
+        {
+          "external_id": "NRDAX-T0001",
+          "source_name": "nrdax",
+          "url": "https://nrdax.com/techniques/NRDAX-T0001"
+        },
+        {
+          "external_id": "NR-2025-014",
+          "source_name": "nr-advisory",
+          "url": "https://nullrabbit.ai/advisories/NR-2025-014"
+        },
+        {
+          "external_id": "CVE-2025-1111",
+          "source_name": "cve",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-1111"
+        },
+        {
+          "external_id": "solana-getblock-response-amplification",
+          "source_name": "nr-brief",
+          "url": "https://nullrabbit.ai/research/solana-getblock-response-amplification"
+        }
+      ],
+      "id": "attack-pattern--b3bcddec-2c42-5bfd-a0fa-f75afef5d7d1",
+      "modified": "2025-01-15T00:00:00.000Z",
+      "name": "RPC getBlock response amplification",
+      "spec_version": "2.1",
+      "type": "attack-pattern",
+      "x_nrdax_chains": [
+        "ethereum",
+        "solana"
+      ],
+      "x_nrdax_family": "response_amp",
+      "x_nrdax_status": "active"
+    },
+    {
+      "created": "2025-02-20T00:00:00.000Z",
+      "description": "An attacker opens and half-completes many connections, exhausting the validator's connection table so legitimate peers can no longer connect.",
+      "external_references": [
+        {
+          "external_id": "NRDAX-T0002",
+          "source_name": "nrdax",
+          "url": "https://nrdax.com/techniques/NRDAX-T0002"
+        },
+        {
+          "external_id": "GHSA-aaaa-bbbb-cccc",
+          "source_name": "ghsa",
+          "url": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc"
+        }
+      ],
+      "id": "attack-pattern--7822d5dc-db48-5d5e-9e3c-ead08205c8ad",
+      "modified": "2025-02-20T00:00:00.000Z",
+      "name": "TCP connection table exhaustion",
+      "spec_version": "2.1",
+      "type": "attack-pattern",
+      "x_nrdax_chains": [
+        "sui"
+      ],
+      "x_nrdax_family": "connection_exhaustion",
+      "x_nrdax_status": "active"
+    },
+    {
+      "created": "2024-11-02T00:00:00.000Z",
+      "description": "A cheap-to-send request triggers a disproportionately expensive handler (trace/simulation), amplifying CPU cost per byte against the node.",
+      "external_references": [
+        {
+          "external_id": "NRDAX-T0003",
+          "source_name": "nrdax",
+          "url": "https://nrdax.com/techniques/NRDAX-T0003"
+        },
+        {
+          "external_id": "GETH-SA-2024-01",
+          "source_name": "vendor-advisory",
+          "url": "https://geth.ethereum.org/security"
+        }
+      ],
+      "id": "attack-pattern--65a8e474-ff40-588b-a8a1-11cce1526876",
+      "modified": "2024-11-02T00:00:00.000Z",
+      "name": "Costly RPC handler CPU amplification",
+      "spec_version": "2.1",
+      "type": "attack-pattern",
+      "x_nrdax_chains": [
+        "ethereum"
+      ],
+      "x_nrdax_family": "rpc_handler_cpu",
+      "x_nrdax_status": "deprecated"
+    }
+  ],
+  "type": "bundle"
+}

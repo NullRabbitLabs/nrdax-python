@@ -1,0 +1,25 @@
+{
+  "id": "NRDAX-T0003",
+  "name": "Costly RPC handler CPU amplification",
+  "mechanism": "A cheap-to-send request triggers a disproportionately expensive handler (trace/simulation), amplifying CPU cost per byte against the node.",
+  "family": "rpc_handler_cpu",
+  "status": "deprecated",
+  "first_seen": "2024-11-02",
+  "instances": [
+    {
+      "chain": "ethereum",
+      "primitive_id": "ethereum_rpc_cpu_trace",
+      "bundle_ref": "corpus_v1.2/ethereum_rpc_cpu_trace/0009",
+      "fidelity": "production-captured",
+      "discovery_origin": "reverse-engineered-cve",
+      "external_references": []
+    }
+  ],
+  "external_references": [
+    {
+      "kind": "vendor-advisory",
+      "id": "GETH-SA-2024-01",
+      "url": "https://geth.ethereum.org/security"
+    }
+  ]
+}

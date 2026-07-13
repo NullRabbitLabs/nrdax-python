@@ -1,0 +1,25 @@
+nrdax-python
+Copyright 2026 NullRabbit Labs
+
+This product includes software developed at NullRabbit Labs (https://nullrabbit.ai).
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this software except in compliance with the License. You may obtain a copy of the
+License in the accompanying LICENSE file or at
+http://www.apache.org/licenses/LICENSE-2.0.
+
+---------------------------------------------------------------------------------
+Data licensing (separate from this source code)
+---------------------------------------------------------------------------------
+
+The Apache-2.0 license above covers the SOURCE CODE of this library and CLI only.
+
+NRDAX (the NullRabbit Decentralised Attack indeX) is a NullRabbit product. The
+NRDAX dataset - including the technique records distributed as a convenience
+snapshot in `src/nrdax/data/snapshot/` and any data retrieved from NRDAX services -
+is NOT licensed under Apache-2.0 and its terms are determined separately by
+NullRabbit. Installing or using this tool grants no rights to the NRDAX dataset.
+See DATA_LICENSE.md.
+
+"NRDAX", "NullRabbit", and related names and logos are trademarks of NullRabbit
+Labs. Trademark rights are not granted by the source-code license.

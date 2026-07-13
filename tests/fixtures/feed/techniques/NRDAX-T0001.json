@@ -1,0 +1,44 @@
+{
+  "id": "NRDAX-T0001",
+  "name": "RPC getBlock response amplification",
+  "mechanism": "A single unauthenticated JSON-RPC getBlock request elicits a response many times the request size, amplifying an attacker's uplink against the validator's RPC surface.",
+  "family": "response_amp",
+  "status": "active",
+  "first_seen": "2025-01-15",
+  "instances": [
+    {
+      "chain": "ethereum",
+      "primitive_id": "ethereum_response_amp_getlogs",
+      "bundle_ref": "corpus_v1.3/ethereum_response_amp_getlogs/0004",
+      "fidelity": "proxy",
+      "discovery_origin": "reverse-engineered-cve",
+      "external_references": []
+    },
+    {
+      "chain": "solana",
+      "primitive_id": "solana_response_amp_getblock",
+      "bundle_ref": "corpus_v1.3/solana_response_amp_getblock/0001",
+      "fidelity": "lab",
+      "discovery_origin": "original-research",
+      "external_references": [
+        {
+          "kind": "cve",
+          "id": "CVE-2025-1111",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-1111"
+        },
+        {
+          "kind": "nr-brief",
+          "id": "solana-getblock-response-amplification",
+          "url": "https://nullrabbit.ai/research/solana-getblock-response-amplification"
+        }
+      ]
+    }
+  ],
+  "external_references": [
+    {
+      "kind": "nr-advisory",
+      "id": "NR-2025-014",
+      "url": "https://nullrabbit.ai/advisories/NR-2025-014"
+    }
+  ]
+}

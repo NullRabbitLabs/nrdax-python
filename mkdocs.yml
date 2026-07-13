@@ -1,0 +1,47 @@
+site_name: nrdax-python
+site_description: Programmatic and command-line access to NRDAX, the NullRabbit Decentralised Attack indeX.
+site_url: https://github.com/NullRabbitLabs/nrdax-python
+repo_url: https://github.com/NullRabbitLabs/nrdax-python
+repo_name: NullRabbitLabs/nrdax-python
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: black
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - scheme: slate
+      primary: black
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - CLI reference: cli.md
+  - Python API reference: api.md
+  - Data model: data-model.md
+  - Guides:
+      - Map a finding to a technique: guides/map-a-finding.md
+      - Retrieve attacks for an implementation: guides/retrieve-by-implementation.md
+      - Build a research dataset: guides/build-a-dataset.md
+      - Export records for a paper: guides/export-for-a-paper.md
+      - Create a citation: guides/create-a-citation.md
+      - Compare registry changes: guides/compare-changes.md
+      - Import NRDAX into another tool: guides/import-into-another-tool.md
+      - Work offline with a pinned dataset: guides/work-offline.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / discussion
+    url: https://github.com/NullRabbitLabs/nrdax-python/discussions
+    about: Ask a question or discuss an idea before opening an issue.
+  - name: NRDAX dataset / data-quality question
+    url: https://nullrabbit.ai
+    about: Questions about the NRDAX dataset itself or its licensing (not the tool).
+  - name: Security vulnerability
+    url: https://github.com/NullRabbitLabs/nrdax-python/security/advisories/new
+    about: Report a security issue privately (do not open a public issue).

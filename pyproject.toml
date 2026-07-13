@@ -1,0 +1,135 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nrdax"
+dynamic = ["version"]
+description = "Programmatic and command-line access to NRDAX, the NullRabbit Decentralised Attack indeX."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "NullRabbit Labs", email = "opensource@nullrabbit.ai" }]
+maintainers = [{ name = "NullRabbit Labs", email = "opensource@nullrabbit.ai" }]
+keywords = [
+    "nrdax",
+    "nullrabbit",
+    "security",
+    "threat-intelligence",
+    "blockchain",
+    "decentralised-infrastructure",
+    "attack-techniques",
+    "stix",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+# The core library and CLI have ZERO required runtime dependencies (stdlib only),
+# so the CLI starts fast and installs cleanly everywhere.
+dependencies = []
+
+[project.optional-dependencies]
+# Stricter STIX validation via the reference implementation (optional; the package
+# ships its own zero-dependency structural validator).
+stix = ["stix2>=3.0"]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "build>=1.2",
+    "twine>=5",
+]
+docs = ["mkdocs>=1.6", "mkdocs-material>=9.5"]
+
+[project.scripts]
+nrdax = "nrdax.cli.main:main"
+
+[project.urls]
+Homepage = "https://nrdax.com"
+Documentation = "https://github.com/NullRabbitLabs/nrdax-python/tree/main/docs"
+Repository = "https://github.com/NullRabbitLabs/nrdax-python"
+Issues = "https://github.com/NullRabbitLabs/nrdax-python/issues"
+Changelog = "https://github.com/NullRabbitLabs/nrdax-python/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "src/nrdax/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nrdax"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/nrdax",
+    "tests",
+    "examples",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE",
+    "DATA_LICENSE.md",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
+ignore = [
+    "SIM108",  # ternary-vs-if is a style call
+    "B008",    # default-call is intentional in a couple of places
+    "RUF001",  # ambiguous unicode in strings (we use en dashes / math symbols deliberately)
+    "RUF002",  # ambiguous unicode in docstrings (x-by-y, set union in prose)
+    "RUF003",  # ambiguous unicode in comments
+    "RUF022",  # __all__ is grouped by category with comments, not alphabetical
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests unpack fixed-shape tuples and don't always use every element.
+"tests/*" = ["B011", "RUF059"]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src/nrdax"]
+strict = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = false
+no_implicit_optional = true
+warn_return_any = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-q -m 'not integration'"
+markers = [
+    "integration: tests that hit the live NRDAX API (deselected by default; run with -m integration)",
+]
+
+[tool.coverage.run]
+source = ["nrdax"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
