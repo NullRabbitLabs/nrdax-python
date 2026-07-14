@@ -44,7 +44,7 @@ nrdax info --format json | python -c "import json,sys;print(json.load(sys.stdin)
 ```python
 from nrdax import NRDAX, cite
 
-reg = NRDAX.load()
+reg = NRDAX.from_api()
 rows = reg.filter(family="consensus_abuse")
 
 with open("refs.bib", "w") as bib:

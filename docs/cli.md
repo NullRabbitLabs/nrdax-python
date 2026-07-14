@@ -17,8 +17,7 @@ Selects where data is loaded from. `SPEC` is one of:
 
 | Spec | Meaning |
 | --- | --- |
-| *(omitted)* | Cached snapshot if present, else the bundled snapshot. |
-| `bundled` | The snapshot shipped with the package. |
+| *(omitted)* | Cached snapshot from a prior `nrdax update`; errors if the cache is empty (no data is bundled). |
 | `cache` | The local cache written by `nrdax update`. |
 | `api` or `api:URL` | The live read API (default `https://api.nrdax.com`). |
 | `feed:LOCATION` | A static-feed directory or base URL. |

@@ -9,10 +9,13 @@ STIX), cite it, and inspect changes.
 Quick start::
 
     from nrdax import NRDAX
-    registry = NRDAX.load()                 # bundled snapshot, offline
+    registry = NRDAX.from_api()             # live registry (or NRDAX.load() after `nrdax update`)
     technique = registry.get("NRDAX-T0006")
     results = registry.search("rpc exhaustion")
     related = registry.related("NRDAX-T0006")
+
+No dataset is bundled in the package: fetch it with ``nrdax update`` (cached for
+offline use) or load a source directly (``from_api`` / ``from_feed`` / ``from_file``).
 
 The CLI (``nrdax``) is built entirely on this library.
 """
@@ -47,7 +50,6 @@ from .registry import NRDAX
 from .relationships import RelatedResult
 from .sources import RawDataset, Source, SourceMeta
 from .sources.api import ApiSource
-from .sources.bundled import BundledSource
 from .sources.feed import FeedSource
 from .sources.file import FileSource
 from .sources.memory import MemorySource
@@ -85,7 +87,6 @@ __all__ = [
     "Source",
     "RawDataset",
     "SourceMeta",
-    "BundledSource",
     "FeedSource",
     "ApiSource",
     "FileSource",

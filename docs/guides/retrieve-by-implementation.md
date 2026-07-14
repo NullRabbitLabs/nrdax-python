@@ -37,7 +37,7 @@ nrdax list --chain solana
 ```python
 from nrdax import NRDAX
 
-reg = NRDAX.load()
+reg = NRDAX.from_api()
 hits = reg.filter(implementation="agave")
 for t in hits:
     print(t.id, t.display, "|", ", ".join(t.chains))

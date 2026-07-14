@@ -1,16 +1,18 @@
 # Work offline with a pinned dataset
 
-## It already works offline
+## Fetch once, then work offline
 
-`nrdax` ships a dataset snapshot inside the package, so every command works with no
-network from the moment you install it:
+`nrdax` bundles no dataset - fetch it once into a local cache, and from then on every
+command works with no network:
 
 ```bash
 pip install nrdax
-nrdax get NRDAX-T0006          # no network needed
+nrdax update                   # fetches the live dataset into the local cache
+nrdax get NRDAX-T0006          # now offline, served from the cache
 ```
 
-`NRDAX.load()` uses that bundled snapshot by default (until you run `nrdax update`).
+`NRDAX.load()` uses that cache by default. Before the first `nrdax update`, read the
+live registry directly with `--source api` (`NRDAX.from_api()`).
 
 ## Acquire the current dataset once, then go offline
 
@@ -21,7 +23,7 @@ nrdax search "rpc exhaustion"  # uses the cache
 nrdax info                     # shows the cached version and fetch time
 ```
 
-After `nrdax update`, the CLI prefers the cache over the bundled snapshot. Stale data
+After `nrdax update`, the CLI uses the cache by default. Stale data
 is never hidden - `nrdax info` and `nrdax cache info` always show the version and when
 it was fetched.
 

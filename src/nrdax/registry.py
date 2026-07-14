@@ -4,7 +4,7 @@ Turns a :class:`~nrdax.sources.RawDataset` (from any source) into a validated,
 indexed, queryable registry. All domain operations live here or in the small
 modules it delegates to (``queries``, ``relationships``, ``coverage``), never in
 the CLI. Loading is source-independent: the read behaviour is identical whether the
-data came from the bundled snapshot, a feed, the live API, a file, or STIX.
+data came from the local cache, a feed, the live API, a file, or STIX.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from functools import cached_property
 from . import cache as _cache
 from . import relationships as _relationships
 from .coverage import coverage_matrix
-from .errors import IssueCollector, NotFoundError, ValidationIssue
+from .errors import IssueCollector, NotFoundError, SourceError, ValidationIssue
 from .models import (
     CoverageMatrix,
     FamilyCount,
@@ -29,16 +29,22 @@ from .queries.search import SearchResult
 from .queries.search import search as _search
 from .relationships import RelatedResult
 from .sources import RawDataset, Source, SourceMeta
-from .sources.bundled import BundledSource
 from .vocab import FAMILIES, NRDAX_SCHEMA_VERSION
 
 
 def default_source() -> Source:
-    """The zero-config source: the freshest local data available offline — the
-    cached snapshot if ``nrdax update`` has run, otherwise the bundled snapshot."""
+    """The zero-config source: the cached snapshot from a prior ``nrdax update``.
+
+    No dataset is bundled in the package (the data is versioned and distributed
+    separately). If the cache is empty there is nothing to load offline, so this
+    raises — fetch first with ``nrdax update`` or pass an explicit source such as
+    ``--source api`` (``NRDAX.from_api()``)."""
     if _cache.has_snapshot():
         return _cache.CacheSource()
-    return BundledSource()
+    raise SourceError(
+        "no local NRDAX data: run `nrdax update` to fetch the dataset into the cache, "
+        "or load an explicit source such as `--source api` (Python: NRDAX.from_api())."
+    )
 
 
 class NRDAX:
@@ -106,18 +112,17 @@ class NRDAX:
 
     @classmethod
     def load(cls, source: Source | None = None, *, strict: bool = False) -> NRDAX:
-        """Load a registry. With no ``source``, use the zero-config default
-        (cached snapshot if present, else the bundled snapshot)."""
+        """Load a registry. With no ``source``, use the zero-config default: the
+        cached snapshot from a prior ``nrdax update``. The package bundles no data,
+        so this raises :class:`~nrdax.errors.SourceError` when the cache is empty —
+        fetch first (``nrdax update``) or pass an explicit source (e.g.
+        ``NRDAX.from_api()``)."""
         src = source if source is not None else default_source()
         return cls(src.load(), strict=strict)
 
     @classmethod
     def from_source(cls, source: Source, *, strict: bool = False) -> NRDAX:
         return cls(source.load(), strict=strict)
-
-    @classmethod
-    def bundled(cls, *, strict: bool = False) -> NRDAX:
-        return cls(BundledSource().load(), strict=strict)
 
     @classmethod
     def from_cache(cls, *, strict: bool = False) -> NRDAX:

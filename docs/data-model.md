@@ -129,9 +129,9 @@ Four versions are tracked independently:
   `schema_version` field.
 
 **Pin an exact dataset** for reproducible research by keeping a copy of a static feed
-and loading it with `--source feed:/path` (or `NRDAX.from_feed`). The bundled snapshot
-is a fixed version (`v0.1-import`); `nrdax update` fetches newer data into the cache
-without changing the bundled pin.
+and loading it with `--source feed:/path` (or `NRDAX.from_feed`). `nrdax update`
+fetches the current dataset into the cache; the package bundles no data, so a pinned
+feed copy is the way to hold a fixed version.
 
 ## Known source limitations
 

@@ -9,7 +9,7 @@ from nrdax import NRDAX
 
 
 def main() -> None:
-    registry = NRDAX.load()
+    registry = NRDAX.from_api()
 
     rel = registry.related("NRDAX-T0006")
     print(f"Relationships for {rel.technique_id} (all DERIVED from canonical fields):")

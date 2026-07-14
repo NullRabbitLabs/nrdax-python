@@ -10,7 +10,7 @@ from nrdax.exporters import stix_bundle, technique_ids, validate_bundle
 
 
 def main() -> None:
-    registry = NRDAX.load()
+    registry = NRDAX.from_api()
     subset = registry.filter(chain="solana")
 
     bundle = stix_bundle(subset, registry.version)

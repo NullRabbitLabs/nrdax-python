@@ -78,7 +78,7 @@ def test_filter_composes(fixture_registry):
     assert [t.id for t in hits] == ["NRDAX-T0001"]
 
 
-def test_bundled_loads_clean(bundled_registry):
-    # Increment-only registry: never shrinks below the shipped snapshot size.
-    assert len(bundled_registry) >= 388
-    assert bundled_registry.validate() == []
+def test_fixture_loads_clean(fixture_registry):
+    # A loaded dataset validates cleanly and indexes every technique.
+    assert len(fixture_registry) == 3
+    assert fixture_registry.validate() == []

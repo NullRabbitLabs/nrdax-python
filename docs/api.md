@@ -17,8 +17,7 @@ The one object you load and query.
 
 | Method | Description |
 | --- | --- |
-| `NRDAX.load(source=None, *, strict=False)` | Load from `source`, or the zero-config default (cache if present, else bundled). |
-| `NRDAX.bundled(*, strict=False)` | The snapshot shipped with the package. |
+| `NRDAX.load(source=None, *, strict=False)` | Load from `source`, or the zero-config default (the cache from a prior `nrdax update`; raises `SourceError` if empty). |
 | `NRDAX.from_cache(*, strict=False)` | The local cache. |
 | `NRDAX.from_feed(location, *, strict=False)` | A static-feed directory or base URL. |
 | `NRDAX.from_api(base_url=None, *, strict=False)` | The live read API. |

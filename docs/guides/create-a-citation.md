@@ -32,7 +32,7 @@ nrdax cite NRDAX-T0006 --format bibtex --accessed 2026-07-13
 ```python
 from nrdax import NRDAX, cite
 
-reg = NRDAX.load()
+reg = NRDAX.from_api()
 print(cite(reg, "NRDAX-T0006", style="markdown", accessed="2026-07-13"))
 ```
 

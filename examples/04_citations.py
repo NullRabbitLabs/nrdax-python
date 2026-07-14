@@ -9,7 +9,7 @@ from nrdax import NRDAX, cite
 
 
 def main() -> None:
-    registry = NRDAX.load()
+    registry = NRDAX.from_api()
     tid = "NRDAX-T0006"
 
     for style in ("text", "markdown", "bibtex", "json"):

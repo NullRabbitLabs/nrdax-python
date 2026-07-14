@@ -1,4 +1,4 @@
-"""Quick start: load the bundled dataset and retrieve a technique.
+"""Quick start: load the live registry and retrieve a technique.
 
 Run:  python examples/01_quickstart.py
 Everything here works offline against the snapshot shipped with the package.
@@ -10,7 +10,7 @@ from nrdax import NRDAX
 
 
 def main() -> None:
-    registry = NRDAX.load()
+    registry = NRDAX.from_api()
     print(f"Loaded NRDAX {registry.version} with {len(registry)} techniques")
     print(f"  reproduced: {sum(1 for t in registry if t.is_reproduced)}")
     print(f"  known-only: {sum(1 for t in registry if not t.is_reproduced)}")

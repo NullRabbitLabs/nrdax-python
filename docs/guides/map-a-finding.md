@@ -42,7 +42,7 @@ have the right one, or point you to a closer match.
 ```python
 from nrdax import NRDAX
 
-reg = NRDAX.load()
+reg = NRDAX.from_api()
 for r in reg.search("worker pool exhaustion", limit=5):
     t = r.technique
     print(f"{r.score:6.1f}  {t.id}  {t.display}  (matched: {', '.join(r.matched_fields)})")

@@ -49,15 +49,11 @@ PROG = "nrdax"
 def resolve_source(spec: str | None) -> Source | None:
     """Turn a ``--source`` spec into a :class:`Source` (``None`` = default).
 
-    Accepts ``bundled``, ``cache``, ``api`` / ``api:URL``, ``feed:LOCATION``,
-    ``file:PATH``, ``stix:PATH``, or a bare path/dir/URL (auto-detected: a
-    directory or feed URL loads as a feed, a file loads as a file)."""
+    Accepts ``cache``, ``api`` / ``api:URL``, ``feed:LOCATION``, ``file:PATH``,
+    ``stix:PATH``, or a bare path/dir/URL (auto-detected: a directory or feed URL
+    loads as a feed, a file loads as a file)."""
     if spec is None:
         return None
-    if spec == "bundled":
-        from ..sources.bundled import BundledSource
-
-        return BundledSource()
     if spec == "cache":
         return _cache.CacheSource()
     if spec == "api" or spec.startswith("api:"):
@@ -295,7 +291,7 @@ def cmd_info(args: argparse.Namespace) -> int:
         f"families           {data['family_count']}",
         f"chains             {data['chain_count']}",
         f"source             {data['source']['kind']}: {data['source']['location']}",
-        f"source fetched at  {data['source']['fetched_at'] or '(bundled/local)'}",
+        f"source fetched at  {data['source']['fetched_at'] or '(local)'}",
         f"validation issues  {data['validation_issues']}",
         "",
         f"cache dir          {cache_info['cache_dir']}",
@@ -447,9 +443,9 @@ def _add_source_arg(p: argparse.ArgumentParser) -> None:
         "--source",
         metavar="SPEC",
         help=(
-            "data source: bundled | cache | api[:URL] | feed:LOCATION | file:PATH | "
-            "stix:PATH | a bare path/dir/URL. Default: cached snapshot if present, "
-            "else the bundled snapshot."
+            "data source: cache | api[:URL] | feed:LOCATION | file:PATH | "
+            "stix:PATH | a bare path/dir/URL. Default: the cached snapshot from a "
+            "prior `nrdax update` (no data is bundled; errors if the cache is empty)."
         ),
     )
     p.add_argument(

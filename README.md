@@ -17,8 +17,9 @@ NRDAX schema and semantics, not forced into an ATT&CK model.
   export, citation, change inspection, and offline use.
 - **Zero required runtime dependencies** - the core library and CLI use only the
   Python standard library, so it installs cleanly and starts fast.
-- **Works offline out of the box** via a bundled dataset snapshot; refresh to the
-  live data when you want it.
+- **Offline once fetched** - run `nrdax update` (or load `--source api`) to pull the
+  dataset into a local cache; subsequent commands work with no network. No data is
+  bundled in the package.
 
 ## What is NRDAX?
 
@@ -60,15 +61,15 @@ nrdax cite NRDAX-T0006 --format bibtex
 nrdax export --implementation agave --format json --output agave-attacks.json
 ```
 
-Every command works offline against the bundled snapshot even before you run
-`nrdax update`.
+Run `nrdax update` once to cache the dataset locally; after that every command works
+offline. Before the first fetch, pass `--source api` to read the live registry.
 
 ## Quick start (Python)
 
 ```python
 from nrdax import NRDAX
 
-registry = NRDAX.load()                    # bundled snapshot, offline, zero-config
+registry = NRDAX.from_api()                # live registry (or NRDAX.load() after `nrdax update`)
 technique = registry.get("NRDAX-T0006")
 print(technique.display, technique.family, technique.chains)
 
@@ -106,16 +107,16 @@ Domain operations are independent of where the data came from. Select a source w
 
 | Source | CLI | Library | Notes |
 | --- | --- | --- | --- |
-| Bundled snapshot | `--source bundled` | `NRDAX.bundled()` | Ships with the package; offline default. |
-| Local cache | `--source cache` | `NRDAX.from_cache()` | Written by `nrdax update`. |
+| Local cache | `--source cache` | `NRDAX.from_cache()` | Written by `nrdax update`; the offline default. |
 | Live API | `--source api[:URL]` | `NRDAX.from_api()` | `https://api.nrdax.com`. |
 | Static feed | `--source feed:LOC` | `NRDAX.from_feed(loc)` | A directory or base URL of feed files. |
 | Local file | `--source file:PATH` | `NRDAX.from_file(path)` | `registry.jsonl`, a bundle, or one technique. |
 | STIX bundle | `--source stix:PATH` | `NRDAX.from_stix(path=...)` | Parses NRDAX STIX (lossy; see data-model). |
 | In-memory | - | `NRDAX.from_memory([...])` | For tests and scripting. |
 
-With no `--source`, the CLI uses the cached snapshot if present, otherwise the
-bundled one. `nrdax info` always shows which source and version you are using.
+With no `--source`, the CLI uses the cached snapshot from a prior `nrdax update`; if
+the cache is empty it errors and tells you to fetch first (no data is bundled).
+`nrdax info` always shows which source and version you are using.
 
 ## Output formats
 
@@ -178,8 +179,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 The **source code** in this repository is licensed under **Apache-2.0** (see
 [LICENSE](LICENSE)).
 
-The **NRDAX dataset** - including the bundled snapshot and any data retrieved from
-NRDAX services - is a separate NullRabbit product with its own terms; this tool
+The **NRDAX dataset** - any data retrieved from NRDAX services (API, feed, cache) -
+is a separate NullRabbit product with its own terms; this tool
 grants no rights to the data. See [DATA_LICENSE.md](DATA_LICENSE.md) and
 [NOTICE](NOTICE). "NRDAX" and "NullRabbit" are trademarks of NullRabbit Labs.
 

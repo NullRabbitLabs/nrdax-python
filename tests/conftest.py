@@ -52,12 +52,6 @@ def fixture_registry() -> NRDAX:
 
 
 @pytest.fixture
-def bundled_registry() -> NRDAX:
-    """The real dataset snapshot shipped with the package."""
-    return NRDAX.bundled()
-
-
-@pytest.fixture
 def tmp_cache(tmp_path, monkeypatch) -> Path:
     """Redirect the cache to an isolated temp dir for the test."""
     cache = tmp_path / "cache"

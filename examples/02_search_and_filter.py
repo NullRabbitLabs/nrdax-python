@@ -9,7 +9,7 @@ from nrdax import NRDAX
 
 
 def main() -> None:
-    registry = NRDAX.load()
+    registry = NRDAX.from_api()
 
     print("Top 5 for 'rpc resource exhaustion':")
     for r in registry.search("rpc resource exhaustion", limit=5):

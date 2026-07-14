@@ -4,8 +4,8 @@ Assemble a filtered, reproducible subset of NRDAX for analysis.
 
 ## 1. Pin a dataset version
 
-For reproducible research, pin the exact data. Either use the bundled snapshot (fixed
-at a known version) or keep your own feed copy:
+For reproducible research, pin the exact data. Fetch the current dataset into the
+cache, or keep your own feed copy for a fixed version:
 
 ```bash
 nrdax info                       # shows the dataset version you are on
@@ -42,7 +42,7 @@ nrdax export --implementation agave \
 from nrdax import NRDAX
 from nrdax.exporters import export_json
 
-reg = NRDAX.load()
+reg = NRDAX.from_api()
 subset = reg.filter(reproduction_status="reproduced", chain="solana")
 
 # Provenance is preserved: version and DOI travel with the records.

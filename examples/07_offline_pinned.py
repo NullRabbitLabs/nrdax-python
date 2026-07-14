@@ -23,9 +23,11 @@ def main() -> None:
     recent = since(pinned, "2025-02-01")
     print(f"Techniques first seen since 2025-02-01: {[t.id for t in recent]}")
 
-    # Diff the pinned snapshot against the bundled one (very different sizes here).
-    bundled = NRDAX.bundled()
-    changes = diff(pinned, bundled)
+    # Diff the pinned snapshot against a hypothetical newer one. We synthesise the
+    # "newer" side in memory (dropping one technique) so the example needs no network;
+    # in practice the other side is a fresh `NRDAX.from_api()` or another saved feed.
+    newer = NRDAX.from_memory([t.to_dict() for t in list(pinned)[1:]], version="newer")
+    changes = diff(pinned, newer)
     print(f"\nDiff {changes.from_version} -> {changes.to_version}: {len(changes)} changes")
     for kind, count in changes.counts_by_kind().items():
         print(f"  {kind}: {count}")

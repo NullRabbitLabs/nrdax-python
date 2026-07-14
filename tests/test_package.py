@@ -1,8 +1,10 @@
-"""Packaging / import sanity + backward-compatibility with the shipped snapshot."""
+"""Packaging / import sanity. The wheel ships code only — no dataset is bundled."""
 
 from __future__ import annotations
 
 from importlib import resources
+
+import pytest
 
 import nrdax
 
@@ -21,19 +23,23 @@ def test_py_typed_ships():
     assert (resources.files("nrdax") / "py.typed").is_file()
 
 
-def test_bundled_snapshot_ships_and_loads():
-    reg = nrdax.NRDAX.load()
-    assert len(reg) >= 388
-    assert reg.version == "v0.1-import"
-    # Fixture backward-compat: a known technique from the prompt examples resolves.
-    assert reg.get("NRDAX-T0006").family == "compute_amp"
+def test_no_dataset_is_bundled():
+    # The dataset is versioned and distributed separately; the wheel ships no data.
+    assert not (resources.files("nrdax") / "data").is_dir()
 
 
-def test_quickstart_snippet_from_readme():
-    registry = nrdax.NRDAX.load()
-    technique = registry.get("NRDAX-T0006")
-    results = registry.search("rpc exhaustion")
-    related = registry.related("NRDAX-T0006")
-    assert technique.id == "NRDAX-T0006"
+def test_load_without_cache_errors(tmp_cache):
+    # With no bundled data and an empty cache there is nothing to load offline.
+    with pytest.raises(nrdax.SourceError):
+        nrdax.NRDAX.load()
+
+
+def test_quickstart_snippet(fixture_registry):
+    # Mirrors the README quick start against an explicit source.
+    registry = fixture_registry
+    technique = registry.get("NRDAX-T0001")
+    results = registry.search("amplification")
+    related = registry.related("NRDAX-T0001")
+    assert technique.id == "NRDAX-T0001"
     assert isinstance(results, list)
-    assert related.family == "compute_amp"
+    assert related is not None

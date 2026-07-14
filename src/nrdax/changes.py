@@ -2,7 +2,7 @@
 
 NRDAX does not (yet) publish historical versioned releases addressable by version
 number, so cross-version comparison is implemented as a **real diff between two
-datasets the caller supplies** (two snapshots, cache vs current, bundled vs live) —
+datasets the caller supplies** (two feed snapshots, or cache vs live api) —
 never simulated. ``since`` derives "added since a date" from ``first_seen``, which
 *is* available on every record. See ``docs/guides/compare-changes.md`` for the
 source limitation and how to pin snapshots for reproducible diffs.

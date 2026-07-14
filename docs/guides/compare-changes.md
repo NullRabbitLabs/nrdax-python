@@ -51,7 +51,7 @@ nrdax changes --from file:old.jsonl --to file:new.jsonl --format json
 from nrdax import NRDAX
 from nrdax.changes import diff, since
 
-reg = NRDAX.load()
+reg = NRDAX.from_api()
 recent = since(reg, "2026-07-01")
 print(f"{len(recent)} techniques first seen since 2026-07-01")
 

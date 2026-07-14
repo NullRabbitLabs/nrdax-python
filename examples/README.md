@@ -1,7 +1,8 @@
 # Examples
 
-Runnable scripts demonstrating the library. All run **offline** against the dataset
-snapshot bundled with the package (no network, no configuration).
+Runnable scripts demonstrating the library. Most read the live registry via
+`NRDAX.from_api()`; run `nrdax update` first if you'd rather work from the local cache
+offline. Example 07 runs fully offline against the repo's feed fixture.
 
 ```bash
 pip install -e .          # or: pip install nrdax

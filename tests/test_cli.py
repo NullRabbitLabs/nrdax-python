@@ -130,7 +130,7 @@ def test_changes_from_version_unsupported_exit_4(capsys):
 
 
 def test_changes_between_sources(capsys):
-    code, out, _ = run(capsys, "changes", "--from", "bundled", "--to", FEED, "--format", "json")
+    code, out, _ = run(capsys, "changes", "--from", FEED, "--to", FEED, "--format", "json")
     doc = json.loads(out)
     assert "counts_by_kind" in doc
 

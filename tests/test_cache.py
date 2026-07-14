@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import pytest
+
 from nrdax import NRDAX, cache
+from nrdax.errors import SourceError
 from nrdax.registry import default_source
-from nrdax.sources.bundled import BundledSource
 from nrdax.sources.memory import MemorySource
 from tests.conftest import make_technique
 
@@ -26,21 +28,23 @@ def test_write_read_round_trip(tmp_cache):
 
 def test_info_reports_presence(tmp_cache):
     assert cache.info()["snapshot_present"] is False
-    cache.write_snapshot(BundledSource().load())
+    cache.write_snapshot(MemorySource([make_technique()], version="v").load())
     info = cache.info()
     assert info["snapshot_present"] is True
-    assert info["technique_count"] >= 388
+    assert info["technique_count"] == 1
 
 
 def test_clear(tmp_cache):
-    cache.write_snapshot(BundledSource().load())
+    cache.write_snapshot(MemorySource([make_technique()], version="v").load())
     assert cache.clear() is True
     assert cache.has_snapshot() is False
     assert cache.clear() is False  # already gone
 
 
-def test_default_source_prefers_cache_when_present(tmp_cache):
-    assert isinstance(default_source(), BundledSource)  # no snapshot yet
+def test_default_source_errors_without_cache_then_prefers_it(tmp_cache):
+    # No dataset is bundled, so with an empty cache there is nothing to load offline.
+    with pytest.raises(SourceError):
+        default_source()
     cache.write_snapshot(MemorySource([make_technique()], version="cached").load())
     from nrdax.cache import CacheSource
 

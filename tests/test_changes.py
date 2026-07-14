@@ -11,10 +11,12 @@ def test_since_uses_first_seen(fixture_registry):
     assert [t.id for t in hits] == ["NRDAX-T0002"]
 
 
-def test_since_ordering(bundled_registry):
-    hits = since(bundled_registry, "2026-07-01")
+def test_since_ordering(fixture_registry):
+    # A cutoff before every fixture date returns all records, ordered by first_seen.
+    hits = since(fixture_registry, "2024-01-01")
     dates = [t.first_seen for t in hits]
     assert dates == sorted(dates)
+    assert len(hits) == 3
 
 
 def test_diff_added_and_removed():

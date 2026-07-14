@@ -10,6 +10,24 @@ compatibility policy.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-14
+
+### Removed
+
+- **The bundled dataset snapshot no longer ships in the package.** The dataset is
+  versioned and distributed separately; the wheel now contains code only. Fetch the
+  data explicitly with `nrdax update` (cached for offline/pinned use) or load a source
+  directly (`--source api` / `NRDAX.from_api()`, `feed:`, `file:`, `stix:`). This
+  mirrors how `mitreattack-python` keeps the ATT&CK data out of the library.
+- Removed `NRDAX.bundled()` and the `bundled` source spec (`--source bundled`).
+
+### Changed
+
+- **Breaking:** the zero-config default (`NRDAX.load()`, or any CLI command with no
+  `--source`) now resolves to the local cache from a prior `nrdax update`, and raises
+  `SourceError` with guidance when the cache is empty (previously it silently fell back
+  to the in-wheel snapshot). Run `nrdax update` once, or pass an explicit source.
+
 ## [0.1.1] - 2026-07-14
 
 ### Changed

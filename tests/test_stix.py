@@ -41,10 +41,10 @@ def test_validate_flags_bad_bundle():
     assert errors  # multiple structural problems
 
 
-def test_full_dataset_valid(bundled_registry):
-    bundle = stix_bundle(list(bundled_registry), bundled_registry.version)
+def test_full_dataset_valid(fixture_registry):
+    bundle = stix_bundle(list(fixture_registry), fixture_registry.version)
     assert validate_bundle(bundle) == []
-    assert len(technique_ids(bundle)) == len(bundled_registry)
+    assert len(technique_ids(bundle)) == len(fixture_registry)
 
 
 def test_bundle_id_is_deterministic(fixture_registry):

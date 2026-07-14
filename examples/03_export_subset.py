@@ -11,7 +11,7 @@ from nrdax.exporters import export_csv, export_json
 
 
 def main() -> None:
-    registry = NRDAX.load()
+    registry = NRDAX.from_api()
     subset = registry.filter(implementation="agave")
     print(f"Selected {len(subset)} techniques (implementation heuristic 'agave')")
 

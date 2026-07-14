@@ -25,7 +25,7 @@ nrdax cite NRDAX-T0006 --format bibtex
 
 ```python
 from nrdax import NRDAX
-registry = NRDAX.load()
+registry = NRDAX.from_api()
 technique = registry.get("NRDAX-T0006")
 ```
 
@@ -44,7 +44,7 @@ technique = registry.get("NRDAX-T0006")
   limitation is isolated and documented.
 - **Determinism.** Search, exports, and STIX output are byte-stable. The STIX export
   is byte-identical to the canonical NRDAX emitter.
-- **Offline-first.** A bundled snapshot means everything works with no network; the
-  cache lets you pin data for reproducible research.
+- **Offline-capable.** `nrdax update` caches the dataset locally so everything then
+  works with no network; the cache also lets you pin data for reproducible research.
 - **Zero required dependencies.** The core library and CLI use only the standard
   library.
