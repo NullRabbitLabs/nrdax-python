@@ -47,6 +47,7 @@ jobs:
       - name: CLI smoke test
         run: |
           nrdax version
+          nrdax update --source api      # no data is bundled; fetch it into the cache first
           nrdax info
           nrdax get NRDAX-T0006 --format json > /dev/null
           nrdax search "rpc exhaustion" --format json > /dev/null
@@ -71,6 +72,7 @@ jobs:
           python -m venv /tmp/clean
           /tmp/clean/bin/pip install dist/*.whl
           /tmp/clean/bin/nrdax version
+          /tmp/clean/bin/nrdax update --source api   # code-only wheel: fetch the dataset first
           /tmp/clean/bin/nrdax get NRDAX-T0006 --format json > /dev/null
       - uses: actions/upload-artifact@v7
         with:
