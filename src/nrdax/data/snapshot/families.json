@@ -22,7 +22,7 @@
     },
     {
       "name": "compute_amp",
-      "technique_count": 19
+      "technique_count": 20
     },
     {
       "name": "connection_exhaustion",
@@ -66,11 +66,11 @@
     },
     {
       "name": "memory_amp",
-      "technique_count": 30
+      "technique_count": 35
     },
     {
       "name": "network-p2p",
-      "technique_count": 115
+      "technique_count": 116
     },
     {
       "name": "network-rpc",

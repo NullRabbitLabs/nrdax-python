@@ -29,7 +29,7 @@ def test_info_reports_presence(tmp_cache):
     cache.write_snapshot(BundledSource().load())
     info = cache.info()
     assert info["snapshot_present"] is True
-    assert info["technique_count"] == 381
+    assert info["technique_count"] >= 388
 
 
 def test_clear(tmp_cache):

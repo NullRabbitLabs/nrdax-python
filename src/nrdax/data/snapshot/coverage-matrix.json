@@ -1,11 +1,11 @@
 {
   "chains": [
-    "bitcoin",
     "cosmos",
+    "bitcoin",
     "ethereum",
     "solana",
-    "libp2p",
     "quic",
+    "libp2p",
     "zcash",
     "ethereum_l2",
     "conflux",
@@ -23,6 +23,7 @@
     "iota",
     "algorand",
     "aptos",
+    "http2",
     "litecoin",
     "bsc",
     "ic",
@@ -32,6 +33,7 @@
     "unknown",
     "dogecoin",
     "general",
+    "http3",
     "multiple",
     "npm",
     "ton",
@@ -170,6 +172,12 @@
     },
     {
       "technique_id": "NRDAX-T0064",
+      "chain": "http2",
+      "strongest_fidelity": "lab",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0064",
       "chain": "ic",
       "strongest_fidelity": "lab",
       "instance_count": 1
@@ -269,6 +277,12 @@
       "chain": "zcash",
       "strongest_fidelity": "lab",
       "instance_count": 4
+    },
+    {
+      "technique_id": "NRDAX-T0111",
+      "chain": "http2",
+      "strongest_fidelity": "proxy",
+      "instance_count": 1
     },
     {
       "technique_id": "NRDAX-T0112",
@@ -376,7 +390,7 @@
       "technique_id": "NRDAX-T0182",
       "chain": "quic",
       "strongest_fidelity": "lab",
-      "instance_count": 1
+      "instance_count": 2
     },
     {
       "technique_id": "NRDAX-T0184",
@@ -668,6 +682,12 @@
     },
     {
       "technique_id": "NRDAX-T0320",
+      "chain": "quic",
+      "strongest_fidelity": "lab",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0320",
       "chain": "solana",
       "strongest_fidelity": "lab",
       "instance_count": 1
@@ -763,6 +783,12 @@
       "instance_count": 1
     },
     {
+      "technique_id": "NRDAX-T0332",
+      "chain": "quic",
+      "strongest_fidelity": "proxy",
+      "instance_count": 1
+    },
+    {
       "technique_id": "NRDAX-T0333",
       "chain": "iota",
       "strongest_fidelity": "lab",
@@ -844,6 +870,42 @@
       "technique_id": "NRDAX-T0369",
       "chain": "sui",
       "strongest_fidelity": "lab",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0382",
+      "chain": "quic",
+      "strongest_fidelity": "lab",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0383",
+      "chain": "http2",
+      "strongest_fidelity": "lab",
+      "instance_count": 2
+    },
+    {
+      "technique_id": "NRDAX-T0384",
+      "chain": "http2",
+      "strongest_fidelity": "proxy",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0386",
+      "chain": "http2",
+      "strongest_fidelity": "lab",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0387",
+      "chain": "http3",
+      "strongest_fidelity": "proxy",
+      "instance_count": 1
+    },
+    {
+      "technique_id": "NRDAX-T0388",
+      "chain": "http3",
+      "strongest_fidelity": "proxy",
       "instance_count": 1
     }
   ],
@@ -1161,6 +1223,10 @@
       "chain": "xrp"
     },
     {
+      "technique_id": "NRDAX-T0044",
+      "chain": "zcash"
+    },
+    {
       "technique_id": "NRDAX-T0045",
       "chain": "ethereum_l2"
     },
@@ -1279,6 +1345,10 @@
     {
       "technique_id": "NRDAX-T0075",
       "chain": "polkadot"
+    },
+    {
+      "technique_id": "NRDAX-T0076",
+      "chain": "cosmos"
     },
     {
       "technique_id": "NRDAX-T0076",
@@ -2537,8 +2607,8 @@
       "chain": "near"
     },
     {
-      "technique_id": "NRDAX-T0332",
-      "chain": "quic"
+      "technique_id": "NRDAX-T0333",
+      "chain": "ethereum"
     },
     {
       "technique_id": "NRDAX-T0334",
@@ -2713,6 +2783,10 @@
       "chain": "near"
     },
     {
+      "technique_id": "NRDAX-T0350",
+      "chain": "zcash"
+    },
+    {
       "technique_id": "NRDAX-T0356",
       "chain": "libp2p"
     },
@@ -2827,6 +2901,10 @@
     {
       "technique_id": "NRDAX-T0381",
       "chain": "monero"
+    },
+    {
+      "technique_id": "NRDAX-T0385",
+      "chain": "zcash"
     }
   ]
 }

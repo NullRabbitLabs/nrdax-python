@@ -44,7 +44,7 @@ def test_validate_flags_bad_bundle():
 def test_full_dataset_valid(bundled_registry):
     bundle = stix_bundle(list(bundled_registry), bundled_registry.version)
     assert validate_bundle(bundle) == []
-    assert len(technique_ids(bundle)) == 381
+    assert len(technique_ids(bundle)) == len(bundled_registry)
 
 
 def test_bundle_id_is_deterministic(fixture_registry):

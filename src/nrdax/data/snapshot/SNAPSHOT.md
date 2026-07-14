@@ -6,10 +6,10 @@ so `NRDAX.load()` works offline with zero configuration.
 | field | value |
 | --- | --- |
 | dataset version | `v0.1-import` |
-| techniques | 381 |
+| techniques | 388 |
 | DOI | none minted yet |
-| captured | 2026-07-13 |
-| source | the NRDAX static feed emitted by `nrdax-emit` (the canonical registry) |
+| captured | 2026-07-14 |
+| source | the live NRDAX read API (`https://api.nrdax.com`, the canonical registry) |
 
 Files: `index.json`, `registry.jsonl`, `families.json`, `coverage-matrix.json`.
 

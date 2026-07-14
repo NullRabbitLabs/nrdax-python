@@ -53,7 +53,7 @@ def fixture_registry() -> NRDAX:
 
 @pytest.fixture
 def bundled_registry() -> NRDAX:
-    """The real 381-technique snapshot shipped with the package."""
+    """The real dataset snapshot shipped with the package."""
     return NRDAX.bundled()
 
 

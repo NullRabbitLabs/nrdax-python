@@ -10,6 +10,19 @@ compatibility policy.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-14
+
+### Changed
+
+- Refreshed the bundled dataset snapshot to the current registry: **388 techniques**
+  (was 381; 7 added, `NRDAX-T0382`..`NRDAX-T0388`), captured from the live read API.
+  The dataset version is unchanged (`v0.1-import`); this is a snapshot refresh, not
+  a schema change.
+- The snapshot now reflects the upstream canonicalisation of instance-level `cve` /
+  `ghsa` reference ids (they carry the identifier, e.g. `CVE-2013-5700`, with the URL
+  in `url`), so `by_reference` / `--reference` / citations / STIX `external_id`
+  resolve for those references.
+
 ## [0.1.0] - 2026-07-13
 
 First public release: the standard open-source Python interface to NRDAX.
@@ -49,5 +62,6 @@ First public release: the standard open-source Python interface to NRDAX.
 - The static feed is not yet hosted at a stable public URL, so `nrdax update`
   fetches from the live API by default.
 
-[Unreleased]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/NullRabbitLabs/nrdax-python/releases/tag/v0.1.0

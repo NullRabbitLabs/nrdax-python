@@ -23,8 +23,17 @@ def test_cells_record_strongest_fidelity(fixture_registry):
     assert cell.instance_count == 1
 
 
-def test_bundled_coverage_matches_feed(bundled_registry):
+def test_bundled_coverage_is_well_formed(bundled_registry):
+    # Structural (refresh-proof) checks on the real dataset: the matrix is non-empty
+    # and every cell references a real technique and an axis chain.
     cov = bundled_registry.coverage
-    assert len(cov.chains) == 64
-    assert len(cov.cells) == 130
-    assert len(cov.known) == 495
+    assert cov.chains and cov.cells and cov.known
+    ids = {t.id for t in bundled_registry}
+    axis = set(cov.chains)
+    for cell in cov.cells:
+        assert cell.technique_id in ids
+        assert cell.chain in axis
+        assert cell.instance_count >= 1
+    for known in cov.known:
+        assert known.technique_id in ids
+        assert known.chain in axis

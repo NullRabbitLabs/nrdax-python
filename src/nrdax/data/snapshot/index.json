@@ -1,6 +1,6 @@
 {
   "version": "v0.1-import",
-  "technique_count": 381,
+  "technique_count": 388,
   "techniques": [
     "NRDAX-T0001",
     "NRDAX-T0002",
@@ -382,6 +382,13 @@
     "NRDAX-T0378",
     "NRDAX-T0379",
     "NRDAX-T0380",
-    "NRDAX-T0381"
+    "NRDAX-T0381",
+    "NRDAX-T0382",
+    "NRDAX-T0383",
+    "NRDAX-T0384",
+    "NRDAX-T0385",
+    "NRDAX-T0386",
+    "NRDAX-T0387",
+    "NRDAX-T0388"
   ]
 }

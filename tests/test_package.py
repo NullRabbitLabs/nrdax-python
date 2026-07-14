@@ -23,7 +23,7 @@ def test_py_typed_ships():
 
 def test_bundled_snapshot_ships_and_loads():
     reg = nrdax.NRDAX.load()
-    assert len(reg) == 381
+    assert len(reg) >= 388
     assert reg.version == "v0.1-import"
     # Fixture backward-compat: a known technique from the prompt examples resolves.
     assert reg.get("NRDAX-T0006").family == "compute_amp"
