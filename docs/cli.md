@@ -19,7 +19,7 @@ Selects where data is loaded from. `SPEC` is one of:
 | --- | --- |
 | *(omitted)* | Cached snapshot from a prior `nrdax update`; errors if the cache is empty (no data is bundled). |
 | `cache` | The local cache written by `nrdax update`. |
-| `api` or `api:URL` | The live read API (default `https://api.nrdax.com`). |
+| `api` or `api:URL` | The live read API (default `https://api.nrdax.com/v1`). |
 | `feed:LOCATION` | A static-feed directory or base URL. |
 | `file:PATH` | A local `registry.jsonl`, a bundle JSON, or a single technique JSON. |
 | `stix:PATH` | A STIX 2.1 bundle (lossy import; see the data model). |

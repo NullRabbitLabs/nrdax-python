@@ -20,8 +20,9 @@ NRDAX_SCHEMA_VERSION: Final = "1.4"
 
 #: The canonical public host for human pages and citations.
 NRDAX_SITE: Final = "https://nrdax.com"
-#: The live read API base URL.
-NRDAX_API: Final = "https://api.nrdax.com"
+#: The live read API base URL. The whole surface is versioned under ``/v1``;
+#: unversioned paths return 404.
+NRDAX_API: Final = "https://api.nrdax.com/v1"
 
 #: Regex source for a technique id. Ids are opaque, stable, and never reused.
 TECHNIQUE_ID_PATTERN: Final = r"^NRDAX-T[0-9]{4}$"

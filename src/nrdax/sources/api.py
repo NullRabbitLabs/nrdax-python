@@ -1,4 +1,4 @@
-"""Live read-API source (``https://api.nrdax.com``).
+"""Live read-API source (``https://api.nrdax.com/v1``).
 
 Paginates ``/techniques`` for the records, then pulls ``/families`` for the
 vocabulary and ``/coverage`` for known coverage. This is the only *live* canonical

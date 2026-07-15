@@ -108,7 +108,7 @@ Domain operations are independent of where the data came from. Select a source w
 | Source | CLI | Library | Notes |
 | --- | --- | --- | --- |
 | Local cache | `--source cache` | `NRDAX.from_cache()` | Written by `nrdax update`; the offline default. |
-| Live API | `--source api[:URL]` | `NRDAX.from_api()` | `https://api.nrdax.com`. |
+| Live API | `--source api[:URL]` | `NRDAX.from_api()` | `https://api.nrdax.com/v1`. |
 | Static feed | `--source feed:LOC` | `NRDAX.from_feed(loc)` | A directory or base URL of feed files. |
 | Local file | `--source file:PATH` | `NRDAX.from_file(path)` | `registry.jsonl`, a bundle, or one technique. |
 | STIX bundle | `--source stix:PATH` | `NRDAX.from_stix(path=...)` | Parses NRDAX STIX (lossy; see data-model). |

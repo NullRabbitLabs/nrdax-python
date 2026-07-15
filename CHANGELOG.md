@@ -10,6 +10,14 @@ compatibility policy.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking (tracks the API):** the live read API is now versioned under `/v1`;
+  `NRDAX_API` is `https://api.nrdax.com/v1` and `ApiSource` requests the versioned
+  paths. Unversioned paths on the API host return 404, so `nrdax update` and
+  `--source api` in earlier releases (<= 0.2.0) no longer work against the live
+  host - upgrade, or pass `--source api:https://api.nrdax.com/v1` explicitly.
+
 ## [0.2.0] - 2026-07-14
 
 ### Removed
