@@ -10,6 +10,8 @@ compatibility policy.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-16
+
 ### Changed
 
 - **Breaking (tracks the API):** the live read API is now versioned under `/v1`;
@@ -88,6 +90,8 @@ First public release: the standard open-source Python interface to NRDAX.
 - The static feed is not yet hosted at a stable public URL, so `nrdax update`
   fetches from the live API by default.
 
-[Unreleased]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/NullRabbitLabs/nrdax-python/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/NullRabbitLabs/nrdax-python/releases/tag/v0.1.0
