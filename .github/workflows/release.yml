@@ -1,13 +1,16 @@
 name: Release
 
 # Triggered by a version tag (vX.Y.Z). It always builds the distributions, cuts a
-# GitHub Release with the wheel + sdist attached, and publishes to PyPI using the
-# PYPI_API_TOKEN repository secret.
+# GitHub Release with the wheel + sdist attached, and publishes to PyPI.
 #
-# PyPI auth: the `PYPI_API_TOKEN` secret (set with `gh secret set PYPI_API_TOKEN`,
-# value never in source). The publish job runs only on this repository, so forks
-# never attempt to publish. To publish an already-tagged version (e.g. after adding
-# the token later), use: Actions > Release > Run workflow > enter the tag.
+# PyPI auth: Trusted Publishing (OIDC) - the publish job mints a short-lived
+# identity token; there is no long-lived secret. The Trusted Publisher is
+# registered on PyPI (project `nrdax` > Settings > Publishing) as owner
+# NullRabbitLabs / repo nrdax-python / workflow release.yml / environment pypi,
+# and must match the `environment: pypi` on the publish job below. The publish
+# job runs only on this repository, so forks never attempt to publish. To
+# publish an already-tagged version, use: Actions > Release > Run workflow >
+# enter the tag.
 
 on:
   push:
@@ -70,6 +73,14 @@ jobs:
     # Never publish from forks.
     if: ${{ github.repository == 'NullRabbitLabs/nrdax-python' }}
     runs-on: ubuntu-latest
+    # Must match the Trusted Publisher registered on PyPI (owner NullRabbitLabs,
+    # repo nrdax-python, workflow release.yml, environment pypi).
+    environment:
+      name: pypi
+      url: https://pypi.org/project/nrdax/
+    permissions:
+      # OIDC token for PyPI Trusted Publishing (no password/API token).
+      id-token: write
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -77,5 +88,3 @@ jobs:
           path: dist
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
