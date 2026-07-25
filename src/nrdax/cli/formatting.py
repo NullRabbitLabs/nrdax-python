@@ -57,7 +57,10 @@ def technique_detail(t: Technique) -> str:
         f"{t.id}  {t.display}",
         "=" * (len(t.id) + 2 + len(t.display)),
         f"slug (name)        {t.name}",
-        f"family             {t.family}",
+        f"family             {t.family or '(pending classification)'}",
+        f"producer family    {t.producer_family or '-'}",
+        f"surface            {t.surface or '-'}",
+        f"bound failure      {t.bound_failure or '-'}",
         f"status             {t.status}",
         f"reproduction       {t.reproduction_status}",
         f"first seen         {t.first_seen}",
@@ -111,7 +114,15 @@ def search_table(results: list[SearchResult], *, explain: bool = False) -> str:
     rows = []
     for r in results:
         t = r.technique
-        row = [f"{r.score:g}", t.id, truncate(t.display, 50), t.family, t.reproduction_status]
+        # `family` is None while a technique is pending classification; render the
+        # state rather than a bare "None" in the table cell.
+        row = [
+            f"{r.score:g}",
+            t.id,
+            truncate(t.display, 50),
+            t.family or "(pending)",
+            t.reproduction_status,
+        ]
         if explain:
             row.append(",".join(r.matched_fields))
         rows.append(row)

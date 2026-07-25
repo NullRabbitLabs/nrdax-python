@@ -5,7 +5,8 @@ parent/child/"related" edges in the schema), so this module surfaces only
 relationships that are *derivable from canonical fields*, and labels them as
 derived:
 
-* **family** — sibling techniques sharing the same family;
+* **family** - sibling techniques sharing the same mechanism family (none when the
+  subject is pending classification, since an unknown mechanism is not shared);
 * **chain** — techniques with a reproduced instance on a shared chain;
 * **reference** — techniques sharing an external reference id (e.g. the same CVE),
   the strongest real link between two records;
@@ -47,7 +48,9 @@ class RelatedResult:
     """Derived relationships for one technique (all ids exclude the subject)."""
 
     technique_id: str
-    family: str
+    #: The subject's mechanism family, or None while pending classification (in
+    #: which case ``family_siblings`` is empty by construction).
+    family: str | None
     family_siblings: list[str] = field(default_factory=list)
     chains: list[ChainNeighbours] = field(default_factory=list)
     shared_references: list[SharedReference] = field(default_factory=list)
@@ -71,6 +74,8 @@ def related(registry: NRDAX, technique_id: str) -> RelatedResult:
     tech: Technique = registry.get(technique_id)
     tid = tech.id
 
+    # techniques_by_family returns [] for a None family, so a technique pending
+    # classification has no siblings rather than every other pending technique.
     siblings = sorted(t.id for t in registry.techniques_by_family(tech.family) if t.id != tid)
 
     chains: list[ChainNeighbours] = []

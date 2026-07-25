@@ -57,7 +57,9 @@ def _field_texts(t: Technique) -> dict[str, list[str]]:
         "id": [t.id],
         "name": [t.name],
         "display_name": [t.display_name] if t.display_name else [],
-        "family": [t.family],
+        # Both taxonomy axes are searchable. `family` is None while a technique is
+        # pending classification, so it is filtered rather than joined blindly.
+        "family": [x for x in (t.family, t.producer_family) if x],
         "chain": [i.chain for i in t.instances],
         "primitive_id": [i.primitive_id for i in t.instances],
         "reference": [ref.id for _, ref in t.iter_references()]

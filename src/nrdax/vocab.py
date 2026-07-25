@@ -27,8 +27,9 @@ NRDAX_API: Final = "https://api.nrdax.com/v1"
 #: Regex source for a technique id. Ids are opaque, stable, and never reused.
 TECHNIQUE_ID_PATTERN: Final = r"^NRDAX-T[0-9]{4}$"
 
-#: The fixed family taxonomy (union of the fine-grained reproduced families and the
-#: coarse ``class`` axis carried by known-but-not-reproduced techniques).
+#: The PRODUCER's family vocabulary: the operational label the producing pipeline
+#: clusters under, served as ``producer_family``. Retained for provenance; it is not
+#: the published taxonomy. See :data:`MECHANISM_FAMILIES` for that.
 FAMILIES: Final[tuple[str, ...]] = (
     # Fine-grained families (the reproduced slice).
     "amm_value_extraction",
@@ -62,6 +63,46 @@ FAMILIES: Final[tuple[str, ...]] = (
     "network-rpc",
     "supply-chain",
 )
+
+#: The published MECHANISM families: what the attack exhausts. A mechanism is the
+#: pair (resource exhausted, bound-failure mode); this names the resource half.
+#:
+#: Distinct from :data:`FAMILIES`, which is the producing pipeline's own clustering
+#: vocabulary and mixes three axes (a mechanism, an entry surface, and a bypassed
+#: guard). A technique's ``family`` is drawn from THIS tuple; its ``producer_family``
+#: from :data:`FAMILIES`.
+MECHANISM_FAMILIES: Final[tuple[str, ...]] = (
+    "compute_amp",
+    "connection_exhaustion",
+    "fault_termination",
+    "memory_amp",
+    "response_amp",
+)
+
+#: Where the attacker's input enters the node. An attribute, never a family: the same
+#: mechanism arrives on different surfaces.
+SURFACES: Final[tuple[str, ...]] = (
+    "consensus-ingest",
+    "control-plane",
+    "p2p-gossip",
+    "rpc-api",
+    "sync-state-import",
+)
+
+#: Why the node's bound on the exhausted resource failed to apply. The second half of
+#: the mechanism pair, and the half carrying the audit question.
+BOUND_FAILURES: Final[tuple[str, ...]] = (
+    "absent-invariant",
+    "late",
+    "mis-quantified",
+    "mis-scoped",
+    "no-bound",
+)
+
+#: Whether a technique carries a curated mechanism classification. ``pending`` means
+#: the registry has not classified it and is saying so, rather than inferring a family
+#: from the producer label.
+CLASSIFICATION_STATES: Final[tuple[str, ...]] = ("curated", "pending")
 
 #: Registry lifecycle statuses (distinct from *reproduction* status).
 STATUSES: Final[tuple[str, ...]] = ("active", "deprecated", "superseded")

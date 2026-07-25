@@ -66,7 +66,13 @@ def parse_bundle(bundle: dict[str, Any]) -> list[dict[str, Any]]:
             "id": nrdax_id,
             "name": sdo.get("name", ""),
             "mechanism": sdo.get("description", ""),
-            "family": sdo.get("x_nrdax_family", ""),
+            # `family` is nullable by contract; a pending technique round-trips as
+            # None rather than being coerced to a string.
+            "family": sdo.get("x_nrdax_family"),
+            "producer_family": sdo.get("x_nrdax_producer_family"),
+            "surface": sdo.get("x_nrdax_surface"),
+            "bound_failure": sdo.get("x_nrdax_bound_failure"),
+            "classification": sdo.get("x_nrdax_classification", "pending"),
             "status": sdo.get("x_nrdax_status", "active"),
             "first_seen": first_seen,
             "instances": [],

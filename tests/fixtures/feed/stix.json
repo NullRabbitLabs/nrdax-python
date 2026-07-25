@@ -31,12 +31,16 @@
       "name": "RPC getBlock response amplification",
       "spec_version": "2.1",
       "type": "attack-pattern",
+      "x_nrdax_bound_failure": "no-bound",
       "x_nrdax_chains": [
         "ethereum",
         "solana"
       ],
+      "x_nrdax_classification": "curated",
       "x_nrdax_family": "response_amp",
-      "x_nrdax_status": "active"
+      "x_nrdax_producer_family": "response_amp",
+      "x_nrdax_status": "active",
+      "x_nrdax_surface": "rpc-api"
     },
     {
       "created": "2025-02-20T00:00:00.000Z",
@@ -58,11 +62,15 @@
       "name": "TCP connection table exhaustion",
       "spec_version": "2.1",
       "type": "attack-pattern",
+      "x_nrdax_bound_failure": null,
       "x_nrdax_chains": [
         "sui"
       ],
-      "x_nrdax_family": "connection_exhaustion",
-      "x_nrdax_status": "active"
+      "x_nrdax_classification": "pending",
+      "x_nrdax_family": null,
+      "x_nrdax_producer_family": "connection_exhaustion",
+      "x_nrdax_status": "active",
+      "x_nrdax_surface": null
     },
     {
       "created": "2024-11-02T00:00:00.000Z",
@@ -84,11 +92,15 @@
       "name": "Costly RPC handler CPU amplification",
       "spec_version": "2.1",
       "type": "attack-pattern",
+      "x_nrdax_bound_failure": "no-bound",
       "x_nrdax_chains": [
         "ethereum"
       ],
-      "x_nrdax_family": "rpc_handler_cpu",
-      "x_nrdax_status": "deprecated"
+      "x_nrdax_classification": "curated",
+      "x_nrdax_family": "compute_amp",
+      "x_nrdax_producer_family": "rpc_handler_cpu",
+      "x_nrdax_status": "deprecated",
+      "x_nrdax_surface": "rpc-api"
     }
   ],
   "type": "bundle"

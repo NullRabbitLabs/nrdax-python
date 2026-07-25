@@ -23,12 +23,15 @@ from typing import Any, ClassVar
 
 from .errors import IssueCollector
 from .vocab import (
+    BOUND_FAILURES,
     DISCOVERY_ORIGINS,
     FAMILIES,
     FIDELITY_CLASSES,
+    MECHANISM_FAMILIES,
     NRDAX_SITE,
     REFERENCE_KINDS,
     STATUSES,
+    SURFACES,
     TECHNIQUE_ID_PATTERN,
     fidelity_strength,
 )
@@ -172,19 +175,44 @@ class Instance:
 class Technique:
     """The citable unit. Opaque stable ``id``; ``family`` is an attribute (a
     technique can be reclassified without its id changing); zero or more instances
-    and external references."""
+    and external references.
+
+    ``family`` is the published MECHANISM taxonomy and is ``None`` while the registry
+    has not classified the technique - it is never inferred from ``producer_family``,
+    because the producer's surface-defined labels have no honest mechanical target.
+    Anything grouping by family must treat ``None`` as unknown rather than as a shared
+    value; see :meth:`is_classified`.
+    """
 
     id: str
     name: str
     mechanism: str
-    family: str
+    #: Published mechanism family, or None while pending classification.
+    family: str | None
     status: str
     first_seen: str
     display_name: str | None = None
+    #: The producing pipeline's own clustering label. Provenance, not the taxonomy.
+    producer_family: str | None = None
+    #: Where the attacker's input enters. Present only when classified.
+    surface: str | None = None
+    #: Why the node's bound failed to apply. Present only when classified.
+    bound_failure: str | None = None
+    #: Secondary family where a technique is genuinely dual and no reproduction
+    #: measured which resource binds first.
+    dual_with: str | None = None
+    #: ``curated`` or ``pending``; always present on a current registry response.
+    classification: str = "pending"
     instances: list[Instance] = field(default_factory=list)
     external_references: list[ExternalReference] = field(default_factory=list)
     provenance_note: str | None = None
     extra: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def is_classified(self) -> bool:
+        """Whether this technique carries a mechanism family. Prefer this over
+        truth-testing ``family``: it states the intent at the call site."""
+        return self.family is not None
 
     _KNOWN: ClassVar[set[str]] = {
         "id",
@@ -192,6 +220,11 @@ class Technique:
         "display_name",
         "mechanism",
         "family",
+        "producer_family",
+        "surface",
+        "bound_failure",
+        "dual_with",
+        "classification",
         "status",
         "first_seen",
         "instances",
@@ -211,9 +244,34 @@ class Technique:
             issues.add(f"{locator}.id", f"id does not match {TECHNIQUE_ID_PATTERN}")
         name = _require_str(data, "name", issues, locator)
         mechanism = _require_str(data, "mechanism", issues, locator)
-        family = _require_str(data, "family", issues, locator)
-        if issues is not None and family and family not in FAMILIES:
-            issues.add(f"{locator}.family", f"unknown family {family!r}", "warning")
+        # `family` is nullable by contract: a technique the registry has not
+        # classified is served null with classification "pending". That is a
+        # well-formed record, not a malformed one, so an absent family is never
+        # reported as an issue - only a present-but-unknown one.
+        family = _optional_str(data, "family", issues, locator)
+        if issues is not None and family and family not in MECHANISM_FAMILIES:
+            issues.add(f"{locator}.family", f"unknown mechanism family {family!r}", "warning")
+        producer_family = _optional_str(data, "producer_family", issues, locator)
+        if issues is not None and producer_family and producer_family not in FAMILIES:
+            issues.add(
+                f"{locator}.producer_family",
+                f"unknown producer family {producer_family!r}",
+                "warning",
+            )
+        surface = _optional_str(data, "surface", issues, locator)
+        if issues is not None and surface and surface not in SURFACES:
+            issues.add(f"{locator}.surface", f"unknown surface {surface!r}", "warning")
+        bound_failure = _optional_str(data, "bound_failure", issues, locator)
+        if issues is not None and bound_failure and bound_failure not in BOUND_FAILURES:
+            issues.add(
+                f"{locator}.bound_failure",
+                f"unknown bound failure {bound_failure!r}",
+                "warning",
+            )
+        dual_with = _optional_str(data, "dual_with", issues, locator)
+        classification = _optional_str(data, "classification", issues, locator) or (
+            "curated" if family else "pending"
+        )
         status = _require_str(data, "status", issues, locator)
         if issues is not None and status and status not in STATUSES:
             issues.add(f"{locator}.status", f"unknown status {status!r}", "warning")
@@ -244,6 +302,11 @@ class Technique:
             status=status,
             first_seen=first_seen,
             display_name=display_name,
+            producer_family=producer_family,
+            surface=surface,
+            bound_failure=bound_failure,
+            dual_with=dual_with,
+            classification=classification,
             instances=instances,
             external_references=refs,
             provenance_note=provenance_note,
@@ -257,6 +320,15 @@ class Technique:
             out["display_name"] = self.display_name
         out["mechanism"] = self.mechanism
         out["family"] = self.family
+        if self.producer_family is not None:
+            out["producer_family"] = self.producer_family
+        if self.surface is not None:
+            out["surface"] = self.surface
+        if self.bound_failure is not None:
+            out["bound_failure"] = self.bound_failure
+        if self.dual_with is not None:
+            out["dual_with"] = self.dual_with
+        out["classification"] = self.classification
         out["status"] = self.status
         out["first_seen"] = self.first_seen
         out["instances"] = [i.to_dict() for i in self.instances]
@@ -410,7 +482,13 @@ class CoverageMatrix:
 
 @dataclass(frozen=True)
 class FamilyCount:
-    """A family and how many techniques currently carry it."""
+    """A family and how many techniques currently carry it.
+
+    ``axis`` says which taxonomy the name belongs to: ``mechanism`` for the published
+    families, ``producer-class`` for the producing pipeline's own labels. A name such
+    as ``memory_amp`` occurs on both axes with different counts, so a count read
+    without its axis is meaningless."""
 
     name: str
     technique_count: int
+    axis: str = "mechanism"

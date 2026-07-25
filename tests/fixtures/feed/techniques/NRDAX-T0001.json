@@ -40,5 +40,9 @@
       "id": "NR-2025-014",
       "url": "https://nullrabbit.ai/advisories/NR-2025-014"
     }
-  ]
+  ],
+  "producer_family": "response_amp",
+  "surface": "rpc-api",
+  "bound_failure": "no-bound",
+  "classification": "curated"
 }

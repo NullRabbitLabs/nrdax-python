@@ -10,6 +10,44 @@ compatibility policy.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-25
+
+### Changed
+
+- **Breaking (tracks the API):** `Technique.family` is now the published *mechanism*
+  taxonomy and is `str | None`. It is `None` while the registry has not classified a
+  technique, which on the live registry is 323 of 420. The producing pipeline's own
+  label moves to the new `producer_family` field. Code doing `t.family == "..."` or
+  grouping on `t.family` must handle `None`; `Technique.is_classified` is provided
+  for the intent.
+- `NRDAX.families()` now returns the five mechanism families (always all five,
+  zero counts included). The producer vocabulary moved to `NRDAX.producer_families()`.
+  `FamilyCount` gains `axis` (`"mechanism"` or `"producer-class"`), because a name
+  such as `memory_amp` occurs on both axes with different counts.
+- `by_family()` and `--family` filter the mechanism axis. `by_producer_family()` and
+  `--producer-family` filter the producer axis.
+- Search matches both axes; STIX export carries `x_nrdax_producer_family`,
+  `x_nrdax_surface`, `x_nrdax_bound_failure` and `x_nrdax_classification` alongside
+  `x_nrdax_family`, byte-identical to the backend emitter.
+
+### Fixed
+
+- **`techniques_by_family()` and `family_siblings` no longer group unclassified
+  techniques together.** Both compared families directly, and since `None == None`
+  every pending technique was a "sibling" of every other one - 323 of them against
+  the live registry. Grouping now requires a known mechanism.
+- A `null` family is no longer reported as a validation issue. A pending technique is
+  well-formed, and flagging it made the registry's own honest gap look like a data
+  defect.
+- The CLI renders `(pending classification)` rather than a bare `None`.
+
+### Added
+
+- `MECHANISM_FAMILIES`, `SURFACES`, `BOUND_FAILURES` and `CLASSIFICATION_STATES`
+  vocabularies; `Technique.surface`, `.bound_failure`, `.dual_with`, `.classification`
+  and `.is_classified`; `NRDAX.classified()`, `.unclassified()` and
+  `.techniques_by_producer_family()`.
+
 ## [0.3.0] - 2026-07-16
 
 ### Changed

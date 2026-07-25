@@ -2,7 +2,7 @@
   "id": "NRDAX-T0002",
   "name": "TCP connection table exhaustion",
   "mechanism": "An attacker opens and half-completes many connections, exhausting the validator's connection table so legitimate peers can no longer connect.",
-  "family": "connection_exhaustion",
+  "family": null,
   "status": "active",
   "first_seen": "2025-02-20",
   "instances": [
@@ -21,5 +21,7 @@
       "id": "GHSA-aaaa-bbbb-cccc",
       "url": "https://github.com/advisories/GHSA-aaaa-bbbb-cccc"
     }
-  ]
+  ],
+  "producer_family": "connection_exhaustion",
+  "classification": "pending"
 }

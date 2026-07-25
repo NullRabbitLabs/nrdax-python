@@ -29,7 +29,7 @@ from .queries.search import SearchResult
 from .queries.search import search as _search
 from .relationships import RelatedResult
 from .sources import RawDataset, Source, SourceMeta
-from .vocab import FAMILIES, NRDAX_SCHEMA_VERSION
+from .vocab import FAMILIES, MECHANISM_FAMILIES, NRDAX_SCHEMA_VERSION
 
 
 def default_source() -> Source:
@@ -96,17 +96,29 @@ class NRDAX:
 
     def _build_indexes(self) -> None:
         by_family: dict[str, list[Technique]] = defaultdict(list)
+        by_producer_family: dict[str, list[Technique]] = defaultdict(list)
         by_chain: dict[str, list[Technique]] = defaultdict(list)
         by_reference: dict[str, list[Technique]] = defaultdict(list)
+        unclassified: list[Technique] = []
         for tech in self.techniques:
-            by_family[tech.family].append(tech)
+            # Only classified techniques are indexed by mechanism family. Indexing
+            # `None` would put every pending technique in one bucket and make them
+            # each other's family siblings - 323 of 420 on the live registry.
+            if tech.family is not None:
+                by_family[tech.family].append(tech)
+            else:
+                unclassified.append(tech)
+            if tech.producer_family is not None:
+                by_producer_family[tech.producer_family].append(tech)
             for chain in tech.chains:
                 by_chain[chain].append(tech)
             for ref_id in tech.reference_ids:
                 by_reference[ref_id].append(tech)
         self._by_family = by_family
+        self._by_producer_family = by_producer_family
         self._by_chain = by_chain
         self._by_reference = by_reference
+        self._unclassified = unclassified
 
     # -- construction ----------------------------------------------------------
 
@@ -216,12 +228,29 @@ class NRDAX:
         return coverage_matrix(self.techniques, self.known_coverage)
 
     def families(self) -> list[FamilyCount]:
-        """Every family in the vocabulary with its technique count (incl. zero)."""
+        """Every MECHANISM family with its technique count, including zero counts.
+
+        This is the published taxonomy. For the producing pipeline's own labels see
+        :meth:`producer_families`; the two are separate axes and a name such as
+        ``memory_amp`` occurs on both with different counts."""
         counts: dict[str, int] = defaultdict(int)
         for tech in self.techniques:
-            counts[tech.family] += 1
+            if tech.family is not None:
+                counts[tech.family] += 1
         return [
-            FamilyCount(name=name, technique_count=counts[name]) for name in self.families_vocab
+            FamilyCount(name=name, technique_count=counts[name], axis="mechanism")
+            for name in MECHANISM_FAMILIES
+        ]
+
+    def producer_families(self) -> list[FamilyCount]:
+        """Every producer-label family with its technique count, including zeros."""
+        counts: dict[str, int] = defaultdict(int)
+        for tech in self.techniques:
+            if tech.producer_family is not None:
+                counts[tech.producer_family] += 1
+        return [
+            FamilyCount(name=name, technique_count=counts[name], axis="producer-class")
+            for name in self.families_vocab
         ]
 
     def chains(self) -> list[str]:
@@ -249,8 +278,26 @@ class NRDAX:
 
     # -- indexes used by relationship traversal --------------------------------
 
-    def techniques_by_family(self, family: str) -> list[Technique]:
+    def techniques_by_family(self, family: str | None) -> list[Technique]:
+        """Techniques carrying this mechanism family. ``None`` returns an empty list
+        rather than every unclassified technique; use :meth:`unclassified` for those."""
+        if family is None:
+            return []
         return list(self._by_family.get(family, []))
+
+    def techniques_by_producer_family(self, family: str | None) -> list[Technique]:
+        """Techniques carrying this producer label (a different axis)."""
+        if family is None:
+            return []
+        return list(self._by_producer_family.get(family, []))
+
+    def unclassified(self) -> list[Technique]:
+        """Techniques with no mechanism family yet, in registry order."""
+        return list(self._unclassified)
+
+    def classified(self) -> list[Technique]:
+        """Techniques carrying a mechanism family, in registry order."""
+        return [t for t in self.techniques if t.family is not None]
 
     def techniques_by_chain(self, chain: str) -> list[Technique]:
         return list(self._by_chain.get(chain, []))

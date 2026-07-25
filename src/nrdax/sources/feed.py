@@ -106,14 +106,24 @@ def load_feed(location: str, *, meta_kind: str = "feed") -> RawDataset:
     matrix = reader.optional_json("coverage-matrix.json")
     known = known_coverage_from_matrix(matrix) if isinstance(matrix, dict) else []
 
+    # `families_vocab` is the PRODUCER vocabulary. Since contract v1.6 the feed's
+    # families.json carries both axes: "families" is the mechanism taxonomy and
+    # "producer_families" the producer labels. Read the producer key and fall back to
+    # the legacy single-axis shape for older snapshots.
     families_doc = reader.optional_json("families.json")
     families: list[str] | None = None
-    if isinstance(families_doc, dict) and isinstance(families_doc.get("families"), list):
-        families = [
-            f["name"]
-            for f in families_doc["families"]
-            if isinstance(f, dict) and isinstance(f.get("name"), str)
-        ]
+    if isinstance(families_doc, dict):
+        key = (
+            "producer_families"
+            if isinstance(families_doc.get("producer_families"), list)
+            else "families"
+        )
+        if isinstance(families_doc.get(key), list):
+            families = [
+                f["name"]
+                for f in families_doc[key]
+                if isinstance(f, dict) and isinstance(f.get("name"), str)
+            ]
 
     fetched_at = datetime.now(timezone.utc).isoformat(timespec="seconds") if reader.is_url else None
     return RawDataset(

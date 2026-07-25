@@ -33,6 +33,7 @@ from ..vocab import (
     DISCOVERY_ORIGINS,
     FAMILIES,
     FIDELITY_CLASSES,
+    MECHANISM_FAMILIES,
     NRDAX_SCHEMA_VERSION,
     REFERENCE_KINDS,
     REPRODUCTION_STATUSES,
@@ -104,6 +105,7 @@ def _predicate_kwargs(args: argparse.Namespace) -> dict[str, Any]:
     kw: dict[str, Any] = {}
     for name in (
         "family",
+        "producer_family",
         "chain",
         "status",
         "fidelity",
@@ -380,6 +382,11 @@ _TECHNIQUE_FIELDS = [
     "display_name",
     "mechanism",
     "family",
+    "producer_family",
+    "surface",
+    "bound_failure",
+    "dual_with",
+    "classification",
     "status",
     "first_seen",
     "instances",
@@ -456,7 +463,16 @@ def _add_source_arg(p: argparse.ArgumentParser) -> None:
 
 
 def _add_filter_args(p: argparse.ArgumentParser) -> None:
-    p.add_argument("--family", choices=FAMILIES, help="exact family")
+    p.add_argument(
+        "--family",
+        choices=MECHANISM_FAMILIES,
+        help="exact mechanism family (the published taxonomy)",
+    )
+    p.add_argument(
+        "--producer-family",
+        choices=FAMILIES,
+        help="exact producer family (the producing pipeline's own label)",
+    )
     p.add_argument("--chain", help="techniques with a reproduced instance on this chain")
     p.add_argument("--status", choices=STATUSES, help="lifecycle status")
     p.add_argument("--fidelity", choices=FIDELITY_CLASSES, help="any instance with this fidelity")

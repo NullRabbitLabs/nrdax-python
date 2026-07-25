@@ -3,8 +3,10 @@
 Reproduces the backend's deterministic scheme (``stix/mod.rs``): ids are UUIDv5
 under a fixed namespace, timestamps come from ``first_seen`` (no wall-clock), the
 NRDAX id is anchored in ``external_references`` (``source_name: "nrdax"``), and the
-NRDAX-specific fields ride as custom properties ``x_nrdax_family`` /
-``x_nrdax_status`` / ``x_nrdax_chains``. Keys are alphabetically sorted and the
+NRDAX-specific fields ride as custom properties: ``x_nrdax_family`` (the published
+mechanism taxonomy, null while pending), ``x_nrdax_producer_family``,
+``x_nrdax_surface``, ``x_nrdax_bound_failure``, ``x_nrdax_classification``,
+``x_nrdax_status`` and ``x_nrdax_chains``. Keys are alphabetically sorted and the
 document is 2-space-indented with a trailing newline, matching the feed's
 ``stix.json`` exactly — so a bundle exported here is identical to the one served.
 """
@@ -61,6 +63,10 @@ def attack_pattern(technique: Technique) -> dict[str, Any]:
         "description": technique.mechanism,
         "external_references": refs,
         "x_nrdax_family": technique.family,
+        "x_nrdax_producer_family": technique.producer_family,
+        "x_nrdax_surface": technique.surface,
+        "x_nrdax_bound_failure": technique.bound_failure,
+        "x_nrdax_classification": technique.classification,
         "x_nrdax_status": technique.status,
         "x_nrdax_chains": chains,
     }

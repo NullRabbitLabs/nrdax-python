@@ -35,7 +35,21 @@ def _validate(value: str, allowed: tuple[str, ...], what: str) -> str:
 
 
 def by_family(name: str) -> Predicate:
-    return lambda t: t.family == name
+    """Match on the published MECHANISM family. A technique pending classification
+    has ``family is None`` and matches nothing here - never every other pending
+    technique, which a bare ``==`` comparison would give you."""
+    return lambda t: t.family is not None and t.family == name
+
+
+def by_producer_family(name: str) -> Predicate:
+    """Match on the producing pipeline's own label, a different axis from
+    :func:`by_family`."""
+    return lambda t: t.producer_family is not None and t.producer_family == name
+
+
+def unclassified() -> Predicate:
+    """Match techniques with no mechanism family yet."""
+    return lambda t: t.family is None
 
 
 def by_status(status: str) -> Predicate:
@@ -111,6 +125,7 @@ def all_of(*predicates: Predicate) -> Predicate:
 def build_predicate(
     *,
     family: str | None = None,
+    producer_family: str | None = None,
     status: str | None = None,
     chain: str | None = None,
     fidelity: str | None = None,
@@ -126,6 +141,8 @@ def build_predicate(
     preds: list[Predicate] = []
     if family is not None:
         preds.append(by_family(family))
+    if producer_family is not None:
+        preds.append(by_producer_family(producer_family))
     if status is not None:
         preds.append(by_status(status))
     if chain is not None:

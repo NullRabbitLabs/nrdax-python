@@ -39,10 +39,24 @@ def test_duplicate_id_recorded_as_issue():
 
 
 def test_families_include_zero_counts(fixture_registry):
+    # The mechanism axis: always all five, zero counts included, so an empty family
+    # reads as empty rather than missing.
     fams = {f.name: f.technique_count for f in fixture_registry.families()}
     assert fams["response_amp"] == 1
-    assert fams["benign"] == 0  # in the vocabulary, unused
-    assert len(fams) == 29
+    assert fams["compute_amp"] == 1
+    assert fams["fault_termination"] == 0
+    assert len(fams) == 5
+    assert all(f.axis == "mechanism" for f in fixture_registry.families())
+
+
+def test_producer_families_are_a_separate_axis(fixture_registry):
+    # The producing pipeline's own vocabulary, kept apart: `rpc_handler_cpu` is a
+    # producer label whose only technique is compute_amp by mechanism.
+    prod = {f.name: f.technique_count for f in fixture_registry.producer_families()}
+    assert prod["rpc_handler_cpu"] == 1
+    assert prod["benign"] == 0  # in the vocabulary, unused
+    assert len(prod) == 29
+    assert all(f.axis == "producer-class" for f in fixture_registry.producer_families())
 
 
 def test_chains_and_instances(fixture_registry):
