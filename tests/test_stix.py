@@ -77,9 +77,9 @@ def test_validate_flags_null_properties_and_empty_lists():
     assert validate_bundle(bundle()) == []
     assert any("x_nrdax_family" in e for e in validate_bundle(bundle(x_nrdax_family=None)))
     assert any("x_nrdax_chains" in e for e in validate_bundle(bundle(x_nrdax_chains=[])))
-    assert validate_bundle(
-        bundle(external_references=[{"source_name": "s", "url": None}])
-    ), "the rule holds inside nested objects too"
+    assert validate_bundle(bundle(external_references=[{"source_name": "s", "url": None}])), (
+        "the rule holds inside nested objects too"
+    )
 
 
 def test_pending_technique_without_instances_omits_rather_than_nulls(fixture_registry):
@@ -104,4 +104,9 @@ def test_pending_technique_without_instances_omits_rather_than_nulls(fixture_reg
     ):
         assert absent not in ap, f"{absent} is omitted, not null/empty"
     assert ap["x_nrdax_classification"] == "pending"
-    assert validate_bundle({"type": "bundle", "id": "bundle--b3bcddec-2c42-5bfd-a0fa-f75afef5d7d1", "objects": [ap]}) == []
+    bundle = {
+        "type": "bundle",
+        "id": "bundle--b3bcddec-2c42-5bfd-a0fa-f75afef5d7d1",
+        "objects": [ap],
+    }
+    assert validate_bundle(bundle) == []
