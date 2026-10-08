@@ -27,6 +27,28 @@ NAMESPACE = uuid.UUID("6e727669-615f-5f5f-8000-000000000001")
 #: Advertised STIX content type.
 CONTENT_TYPE = "application/stix+json;version=2.1"
 
+#: The registry data license, carried as a STIX statement marking-definition that every
+#: attack-pattern references (matches the backend's ``LICENSE_STATEMENT``).
+LICENSE_STATEMENT = (
+    "CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/). Attribution: NullRabbit Labs."
+)
+
+#: Deterministic id of the license marking-definition (UUIDv5, as the backend).
+LICENSE_MARKING_ID = f"marking-definition--{uuid.uuid5(NAMESPACE, 'license:cc-by-4.0')}"
+
+
+def license_marking() -> dict[str, Any]:
+    """The CC-BY-4.0 marking-definition. ``created`` is fixed (the registry's epoch), so
+    the bundle carries no wall-clock and stays byte-identical to the backend's."""
+    return {
+        "type": "marking-definition",
+        "spec_version": "2.1",
+        "id": LICENSE_MARKING_ID,
+        "created": "2025-01-01T00:00:00.000Z",
+        "definition_type": "statement",
+        "definition": {"statement": LICENSE_STATEMENT},
+    }
+
 
 def _reference(kind: str, ref_id: str, url: str | None) -> dict[str, Any]:
     obj: dict[str, Any] = {"source_name": kind, "external_id": ref_id}
@@ -64,6 +86,7 @@ def attack_pattern(technique: Technique) -> dict[str, Any]:
         "name": technique.display,
         "description": technique.mechanism,
         "external_references": refs,
+        "object_marking_refs": [LICENSE_MARKING_ID],
         "x_nrdax_family": technique.family,
         "x_nrdax_producer_family": technique.producer_family,
         "x_nrdax_surface": technique.surface,
@@ -80,7 +103,8 @@ def attack_pattern(technique: Technique) -> dict[str, Any]:
 
 def stix_bundle(techniques: list[Technique], version: str) -> dict[str, Any]:
     """A STIX bundle of the given techniques, with a deterministic bundle id."""
-    objects = [attack_pattern(t) for t in techniques]
+    # The license marking leads the bundle; every attack-pattern references it.
+    objects = [license_marking(), *(attack_pattern(t) for t in techniques)]
     seed = version + "".join(f"|{t.id}" for t in techniques)
     bundle_id = uuid.uuid5(NAMESPACE, seed)
     return {
