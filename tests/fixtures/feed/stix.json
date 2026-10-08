@@ -62,15 +62,12 @@
       "name": "TCP connection table exhaustion",
       "spec_version": "2.1",
       "type": "attack-pattern",
-      "x_nrdax_bound_failure": null,
       "x_nrdax_chains": [
         "sui"
       ],
       "x_nrdax_classification": "pending",
-      "x_nrdax_family": null,
       "x_nrdax_producer_family": "connection_exhaustion",
-      "x_nrdax_status": "active",
-      "x_nrdax_surface": null
+      "x_nrdax_status": "active"
     },
     {
       "created": "2024-11-02T00:00:00.000Z",
