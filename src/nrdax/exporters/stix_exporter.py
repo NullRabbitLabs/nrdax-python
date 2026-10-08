@@ -4,9 +4,11 @@ Reproduces the backend's deterministic scheme (``stix/mod.rs``): ids are UUIDv5
 under a fixed namespace, timestamps come from ``first_seen`` (no wall-clock), the
 NRDAX id is anchored in ``external_references`` (``source_name: "nrdax"``), and the
 NRDAX-specific fields ride as custom properties: ``x_nrdax_family`` (the published
-mechanism taxonomy, null while pending), ``x_nrdax_producer_family``,
+mechanism taxonomy, omitted while pending), ``x_nrdax_producer_family``,
 ``x_nrdax_surface``, ``x_nrdax_bound_failure``, ``x_nrdax_classification``,
-``x_nrdax_status`` and ``x_nrdax_chains``. Keys are alphabetically sorted and the
+``x_nrdax_status`` and ``x_nrdax_chains``. A property with no value (a pending
+technique's classification axes, the chains of one with no instance) is omitted, since
+STIX 2.1 forbids null properties and empty lists. Keys are alphabetically sorted and the
 document is 2-space-indented with a trailing newline, matching the feed's
 ``stix.json`` exactly — so a bundle exported here is identical to the one served.
 """
@@ -24,6 +26,28 @@ NAMESPACE = uuid.UUID("6e727669-615f-5f5f-8000-000000000001")
 
 #: Advertised STIX content type.
 CONTENT_TYPE = "application/stix+json;version=2.1"
+
+#: The registry data license, carried as a STIX statement marking-definition that every
+#: attack-pattern references (matches the backend's ``LICENSE_STATEMENT``).
+LICENSE_STATEMENT = (
+    "CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/). Attribution: NullRabbit Labs."
+)
+
+#: Deterministic id of the license marking-definition (UUIDv5, as the backend).
+LICENSE_MARKING_ID = f"marking-definition--{uuid.uuid5(NAMESPACE, 'license:cc-by-4.0')}"
+
+
+def license_marking() -> dict[str, Any]:
+    """The CC-BY-4.0 marking-definition. ``created`` is fixed (the registry's epoch), so
+    the bundle carries no wall-clock and stays byte-identical to the backend's."""
+    return {
+        "type": "marking-definition",
+        "spec_version": "2.1",
+        "id": LICENSE_MARKING_ID,
+        "created": "2025-01-01T00:00:00.000Z",
+        "definition_type": "statement",
+        "definition": {"statement": LICENSE_STATEMENT},
+    }
 
 
 def _reference(kind: str, ref_id: str, url: str | None) -> dict[str, Any]:
@@ -53,7 +77,7 @@ def attack_pattern(technique: Technique) -> dict[str, Any]:
 
     chains = sorted({inst.chain for inst in technique.instances})
 
-    return {
+    obj: dict[str, Any] = {
         "type": "attack-pattern",
         "spec_version": "2.1",
         "id": f"attack-pattern--{ap_uuid}",
@@ -62,6 +86,7 @@ def attack_pattern(technique: Technique) -> dict[str, Any]:
         "name": technique.display,
         "description": technique.mechanism,
         "external_references": refs,
+        "object_marking_refs": [LICENSE_MARKING_ID],
         "x_nrdax_family": technique.family,
         "x_nrdax_producer_family": technique.producer_family,
         "x_nrdax_surface": technique.surface,
@@ -70,11 +95,16 @@ def attack_pattern(technique: Technique) -> dict[str, Any]:
         "x_nrdax_status": technique.status,
         "x_nrdax_chains": chains,
     }
+    # STIX 2.1 forbids null properties and empty lists: a pending technique omits its
+    # classification axes (x_nrdax_classification says why) and one with no instance
+    # omits its chains, exactly as the backend does.
+    return {k: v for k, v in obj.items() if v is not None and v != []}
 
 
 def stix_bundle(techniques: list[Technique], version: str) -> dict[str, Any]:
     """A STIX bundle of the given techniques, with a deterministic bundle id."""
-    objects = [attack_pattern(t) for t in techniques]
+    # The license marking leads the bundle; every attack-pattern references it.
+    objects = [license_marking(), *(attack_pattern(t) for t in techniques)]
     seed = version + "".join(f"|{t.id}" for t in techniques)
     bundle_id = uuid.uuid5(NAMESPACE, seed)
     return {
@@ -124,6 +154,7 @@ def validate_bundle(bundle: dict[str, Any]) -> list[str]:
         if not isinstance(obj, dict):
             errors.append(f"objects[{i}] must be an object")
             continue
+        _null_and_empty_list_violations(obj, f"objects[{i}]", errors)
         otype = obj.get("type")
         if not otype:
             errors.append(f"objects[{i}].type is required")
@@ -141,6 +172,23 @@ def validate_bundle(bundle: dict[str, Any]) -> list[str]:
                 if not isinstance(ref, dict) or not ref.get("source_name"):
                     errors.append(f"objects[{i}].external_references[{j}].source_name is required")
     return errors
+
+
+def _null_and_empty_list_violations(value: Any, path: str, errors: list[str]) -> None:
+    """STIX 2.1 core rules: no property may be null and no list may be empty, at any
+    depth (a property is omitted instead)."""
+    if isinstance(value, dict):
+        for key, v in value.items():
+            here = f"{path}.{key}"
+            if v is None:
+                errors.append(f"{here} must not be null")
+            elif isinstance(v, list) and not v:
+                errors.append(f"{here} must not be an empty list")
+            else:
+                _null_and_empty_list_violations(v, here, errors)
+    elif isinstance(value, list):
+        for j, v in enumerate(value):
+            _null_and_empty_list_violations(v, f"{path}[{j}]", errors)
 
 
 def _is_stix_id(value: Any, expected_type: str) -> bool:
