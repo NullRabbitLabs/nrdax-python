@@ -2,6 +2,16 @@
   "id": "bundle--67557f41-343e-51af-9835-f00aa26a370f",
   "objects": [
     {
+      "created": "2025-01-01T00:00:00.000Z",
+      "definition": {
+        "statement": "CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/). Attribution: NullRabbit Labs."
+      },
+      "definition_type": "statement",
+      "id": "marking-definition--42394f69-0f7f-5bdf-b0de-c272325fae94",
+      "spec_version": "2.1",
+      "type": "marking-definition"
+    },
+    {
       "created": "2025-01-15T00:00:00.000Z",
       "description": "A single unauthenticated JSON-RPC getBlock request elicits a response many times the request size, amplifying an attacker's uplink against the validator's RPC surface.",
       "external_references": [
@@ -29,6 +39,9 @@
       "id": "attack-pattern--b3bcddec-2c42-5bfd-a0fa-f75afef5d7d1",
       "modified": "2025-01-15T00:00:00.000Z",
       "name": "RPC getBlock response amplification",
+      "object_marking_refs": [
+        "marking-definition--42394f69-0f7f-5bdf-b0de-c272325fae94"
+      ],
       "spec_version": "2.1",
       "type": "attack-pattern",
       "x_nrdax_bound_failure": "no-bound",
@@ -60,6 +73,9 @@
       "id": "attack-pattern--7822d5dc-db48-5d5e-9e3c-ead08205c8ad",
       "modified": "2025-02-20T00:00:00.000Z",
       "name": "TCP connection table exhaustion",
+      "object_marking_refs": [
+        "marking-definition--42394f69-0f7f-5bdf-b0de-c272325fae94"
+      ],
       "spec_version": "2.1",
       "type": "attack-pattern",
       "x_nrdax_chains": [
@@ -87,6 +103,9 @@
       "id": "attack-pattern--65a8e474-ff40-588b-a8a1-11cce1526876",
       "modified": "2024-11-02T00:00:00.000Z",
       "name": "Costly RPC handler CPU amplification",
+      "object_marking_refs": [
+        "marking-definition--42394f69-0f7f-5bdf-b0de-c272325fae94"
+      ],
       "spec_version": "2.1",
       "type": "attack-pattern",
       "x_nrdax_bound_failure": "no-bound",

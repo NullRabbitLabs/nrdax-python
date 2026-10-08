@@ -110,3 +110,16 @@ def test_pending_technique_without_instances_omits_rather_than_nulls(fixture_reg
         "objects": [ap],
     }
     assert validate_bundle(bundle) == []
+
+
+def test_bundle_carries_the_cc_by_license_marking_every_technique_references(fixture_registry):
+    # Same as the backend: a statement marking-definition leads the bundle and every
+    # attack-pattern references it, so TIP consumers see the CC-BY-4.0 reuse terms.
+    bundle = stix_bundle(list(fixture_registry), fixture_registry.version)
+    marking = bundle["objects"][0]
+    assert marking["type"] == "marking-definition"
+    assert marking["definition_type"] == "statement"
+    assert "CC-BY-4.0" in marking["definition"]["statement"]
+    for ap in bundle["objects"][1:]:
+        assert ap["object_marking_refs"] == [marking["id"]]
+    assert validate_bundle(bundle) == []
